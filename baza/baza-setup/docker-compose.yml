@@ -1,0 +1,13 @@
+# docker-compose.yml
+services:
+  db:
+    image: postgres:16
+    container_name: praktikum
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: geslo123
+      POSTGRES_DB: praktikum_baza
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./praktikum_baza.sql:/docker-entrypoint-initdb.d/init.sql

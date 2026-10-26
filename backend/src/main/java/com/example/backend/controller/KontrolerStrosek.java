@@ -14,7 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.entitete.Strosek;
 import com.example.backend.entitete.StrosekBaza;
 
-@RestController //Povemo browseru da je to kontroler za obdelavo zahtevkov in da bo vrnil json objekt
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@RestController
+@Tag(name = "Stroški", description = "CRUD operacije za spremljanje stroškov")
 public class KontrolerStrosek {
     private final StrosekBaza strosekBaza;
 
@@ -23,29 +30,63 @@ public class KontrolerStrosek {
         this.strosekBaza = strosekBaza;
     }
 
-    @GetMapping("/strosek") //endpoint za prikaz vshe stroškov
+    @GetMapping("/strosek")
+    @Operation(summary = "Prikaži vse stroške")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Seznam vseh stroškov")
+    })
     public List<Strosek> prikaziStroske(){
         return strosekBaza.findAll();
     }
+    /*public Page<Strosek> prikaziStroske(
+        @RequestParam(defaultValue="0") int page,
+        @RequestParam(defaultValue="10") int size,
+        @RequestParam(defaultValue="datum, desc") String sort
+    ){
+        String[] deli = sort.split(",");
+        String polje = deli[0].trim();
 
-    @GetMapping("/strosek/{id}") //endpoint za prikaz specificnega stroska glede na id
-    public Strosek prikaziStrosek(@PathVariable @NonNull Long id){
+        Sort.Direction smer = Sort.Direction.DESC;
+        if (deli.length > 1 && deli[1].trim().equalsIgnoreCase("asc")) {
+            smer = Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(page,size, Sort.by(smer, polje));
+        return strosekBaza.findAll(pageable);
+    }*/
+
+    @GetMapping("/strosek/{id}")
+    @Operation(summary = "Prikaži strošek po ID-ju")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Strošek najden"),
+        @ApiResponse(responseCode = "404", description = "Strošek ne obstaja")
+    })
+    public Strosek prikaziStrosek(@PathVariable @NonNull @Parameter(description = "ID stroška") Long id){
         Strosek strosek = strosekBaza.findById(id).orElse(null);
         if (strosek != null){
-            return strosek; //Vrnem objekt stroška, dobim pa v json objekt ven
+            return strosek;
         }
         else {
             System.out.println("Strosek z ID=" + id + " ne obstaja.");
         }
         return null;
     }
-    @PostMapping("/strosek")//Dodaj nov strosek
+    @PostMapping("/strosek")
+    @Operation(summary = "Dodaj nov strošek")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Strošek shranjen")
+    })
     public Strosek dodajStrosek(@RequestBody @NonNull Strosek strosek){
-        return strosekBaza.save(strosek); //save() shrani objekt v bazo.
+        return strosekBaza.save(strosek);
     }
 
-    @PutMapping("/strosek/{id}") //Posodobimo atribut stroška ali celoten strošek deluje kot patch in put naenkrat
-    public Strosek posodobiStrosek(@RequestBody Strosek novStrosek, @PathVariable @NonNull Long id){
+    @PutMapping("/strosek/{id}")
+    @Operation(summary = "Posodobi obstoječi strošek")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Strošek posodobljen"),
+        @ApiResponse(responseCode = "404", description = "Strošek ne obstaja")
+    })
+    public Strosek posodobiStrosek(@RequestBody Strosek novStrosek, @PathVariable @NonNull @Parameter(description = "ID stroška") Long id){
         Strosek obstojecStrosek = prikaziStrosek(id);
 
         if(obstojecStrosek==null){
@@ -54,18 +95,22 @@ public class KontrolerStrosek {
         if (novStrosek.getNaziv()!=null){
             obstojecStrosek.setNaziv(novStrosek.getNaziv());
         }
-        if (novStrosek.getZnesek()!=0.0){ //Če je znesek 0.0 potem to ni strošek.
+        if (novStrosek.getZnesek()!=0.0){
             obstojecStrosek.setZnesek(novStrosek.getZnesek());
         }
         if (novStrosek.getDatum()!=null){
             obstojecStrosek.setDatum(novStrosek.getDatum());
         }
 
-        return strosekBaza.save(obstojecStrosek); //Vrnemo obstojec strosek, ki je bil update-an z novim.
+        return strosekBaza.save(obstojecStrosek);
     }
 
     @DeleteMapping("/strosek/{id}")
-    public void izbrisiStrosek(@PathVariable @NonNull Long id) {
+    @Operation(summary = "Izbriši strošek")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Strošek izbrisan")
+    })
+    public void izbrisiStrosek(@PathVariable @NonNull @Parameter(description = "ID stroška") Long id) {
         strosekBaza.deleteById(id);
     }
 }

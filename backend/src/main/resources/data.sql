@@ -1,3 +1,4 @@
+--Prompt: Napiši 20 testnih sql insert stavkov z atributi naziv, znesek in datum za tabelo strosek.
 INSERT INTO strosek (naziv, znesek, datum) VALUES ('Kava', 2.50, '2026-06-07');
 INSERT INTO strosek (naziv, znesek, datum) VALUES ('Kosilo', 12.00, '2026-06-07');
 INSERT INTO strosek (naziv, znesek, datum) VALUES ('Mesečna karta za avtobus', 38.00, '2026-06-01');
