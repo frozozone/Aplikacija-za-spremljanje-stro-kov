@@ -1,32 +1,30 @@
-# Odvisnosti (frontend)
 node_modules/
 
-# Poročila za vaje (ne spadajo v repozitorij)
+#Poročila za vaje
 *.docx
 *.zip
 
-# Testi backenda (ne spadajo v repozitorij)
 backend/src/test/
 
-# Build izhodi
+#Build izhodi
 frontend/dist/
 backend/target/
 
-# Nastavitve urejevalnikov / IDE
+#Nastavitve urejevalnikov / IDE
 .vscode/
 .idea/
 *.iml
 
-# Okoljske spremenljivke in lokalne nastavitve
+#Okoljske spremenljivke in lokalne konfiguracije
 .env
 .env.*
 *.local
 
-# Logi
+#Logi
 *.log
 logs/
 
-# Sistemske datoteke
+#Sistemske datoteke
 .DS_Store
 Thumbs.db
 desktop.ini
