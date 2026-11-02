@@ -11,7 +11,7 @@ public class CorsConfig {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(CorsRegistry registry){ //frontend tece na drugem portu, zato mu dovolimo dostop
                 registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
             }
         };

@@ -1,0 +1,35 @@
+# Odvisnosti (frontend)
+node_modules/
+
+# Poročila za vaje (ne spadajo v repozitorij)
+*.docx
+*.zip
+
+# Testi backenda (ne spadajo v repozitorij)
+backend/src/test/
+
+# Build izhodi
+frontend/dist/
+backend/target/
+
+# Nastavitve urejevalnikov / IDE
+.vscode/
+.idea/
+*.iml
+
+# Okoljske spremenljivke in lokalne nastavitve
+.env
+.env.*
+*.local
+
+# Logi
+*.log
+logs/
+
+# Sistemske datoteke
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Začasne datoteke Worda/Officea (ko je dokument odprt)
+~$*
