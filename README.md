@@ -78,7 +78,7 @@ Kje so pomembne stvari:
 Na računalniku moraš imeti nameščeno:
 - Git,
 - Javo (JDK 21 ali novejšo),
-- Node.js 22 ali novejši (zraven pride tudi npm),
+- Node.js 22 ali novejši (zraven pride tudi npm) naložimo v mapo frontend,
 - Docker Desktop,
 - po želji DataGrip za pregled baze
 
