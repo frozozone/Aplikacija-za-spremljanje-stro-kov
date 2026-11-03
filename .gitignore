@@ -18,6 +18,7 @@ backend/target/
 #Okoljske spremenljivke in lokalne konfiguracije
 .env
 .env.*
+!.env.example
 *.local
 
 #Logi

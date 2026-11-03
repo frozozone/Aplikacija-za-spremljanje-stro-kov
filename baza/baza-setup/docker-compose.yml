@@ -1,12 +1,10 @@
-# docker-compose.yml
+#docker-compose.yml
 services:
   db:
     image: postgres:16
     container_name: praktikum
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: geslo123
-      POSTGRES_DB: praktikum_baza
+    env_file:
+      - ../../.env   #uporabnik, geslo in ime baze so v .env v korenu projekta
     ports:
       - "5432:5432"
     volumes:
