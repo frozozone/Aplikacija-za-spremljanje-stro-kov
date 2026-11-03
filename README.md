@@ -71,7 +71,7 @@ Kje so pomembne stvari:
 - vsa logika na frontendu je v App.jsx
 - tabele in testni podatki so v praktikum_baza.sql
 
-## Kloniranje repozitorija in zagon aplikacije
+## Navodila za nameščanje in zagon
 
 ### Predpogoji
 
