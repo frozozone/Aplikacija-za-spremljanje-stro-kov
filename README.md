@@ -7,10 +7,10 @@ Projekt pri predmetu razvoj informacijskih sistemov. Gre za preprosto spletno ap
 Ideja je, da imaš na enem mestu pregled, na kaj zapravljaš denar.
 
 Kaj aplikacija dela:
-- dodajanje novega stroška (naziv, znesek, datum, čas, kategorija),
+- dodajanje novega stroška (naziv, znesek, datum, čas, kategorija, način plačila, opis),
 - urejanje in brisanje stroškov,
 - prikaz stroškov po straneh, najnovejši so na vrhu,
-- filtriranje po kategoriji,
+- filtriranje po kategoriji (filter po glavni kategoriji pokaže tudi stroške njenih podkategorij),
 - iskanje po nazivu
 
 Aplikacija ima tri dele: frontend (kar vidi uporabnik), backend (REST API) in bazo.
@@ -45,30 +45,37 @@ Projekt je razdeljen na štiri glavne mape:
     - controller - java razredi/datoteke (kontrolerji), ki vsebujejo endpointe
       - KontrolerStrosek.java - dodajanje, branje, urejanje in brisanje stroškov
       - KontrolerKategorija.java - vrne seznam kategorij
+      - KontrolerNacinPlacila.java - vrne seznam načinov plačila
+      - ObravnavaNapak.java - napake pretvori v odgovor oblike {"message": "..."}, ki ga prikaže frontend
     - entitete - razredi, ki predstavljajo tabele v bazi, in interface-i za dostop do baze
-      - Strosek.java, Kategorija.java - razreda za tabeli Strosek in Kategorija
-      - StrosekBaza.java, KategorijaBaza.java - interface-a, ki dedujeta od JpaRepository, zato že imata osnovne metode za delo z bazo (findAll, findById, save, deleteById)
-        - StrosekBaza ima še svojo metodo findByKategorija, ki vrne samo stroške izbrane kategorije
+      - Strosek.java, Kategorija.java, NacinPlacila.java, Uporabnik.java, Vloga.java - razredi za tabele v bazi
+      - StrosekBaza.java, KategorijaBaza.java, ... - interface-i, ki dedujejo od JpaRepository, zato že imajo osnovne metode za delo z bazo (findAll, findById, save, delete)
+        - StrosekBaza ima še svojo metodo findByKategorija, ki vrne stroške izbrane kategorije in njenih podkategorij
     - config - CorsConfig.java, ki dovoli, da frontend kliče backend
   - src/main/resources/application.properties - nastavitve za povezavo na bazo in Swagger
   - pom.xml - seznam knjižnic, ki jih backend uporablja
 - frontend - React aplikacija
   - src
-    - App.jsx - glavna komponenta (tabela stroškov, obrazec, filtri, strani)
+    - App.jsx - glavna komponenta
+    - StranStroski.jsx - stran s stroški (filtri, strani, nalaganje podatkov)
+    - TabelaStroskov.jsx, ObrazecNovStrosek.jsx, ModalUrejanjeStroska.jsx - tabela, obrazec za nov strošek in okno za urejanje
+    - PoljaStroska.jsx, IzbirniSeznam.jsx - polja obrazca, ki so skupna za dodajanje in urejanje
+    - zaledje.js - vsi klici na backend
+    - pomozneFunkcije.js - datum, čas, urejanje kategorij, pretvorba podatkov obrazca
     - Header.jsx - glava strani
     - main.jsx - vstopna točka
     - index.css - stili
   - package.json - seznam knjižnic, ki jih frontend uporablja
 - baza/baza-setup
   - docker-compose.yml - zažene PostgreSQL v Dockerju
-  - praktikum_baza.sql - ustvari tabeli Kategorija in Strosek ter vstavi testne podatke (praktikum je samo ime datoteke, nima dejansko veze s praktikumom, ima le podobno konfiguracijo kot praktikum)
+  - praktikum_baza.sql - ustvari tabele (vloga, uporabnik, nacin_placila, kategorija, strosek) ter vstavi testne podatke (praktikum je samo ime datoteke, nima dejansko veze s praktikumom, ima le podobno konfiguracijo kot praktikum)
 - dokumentacija - poročila vaj in screenshoti
 - .env.example - predloga za okoljske spremenljivke (podatki za bazo)
 
 Kje so pomembne stvari:
 - endpointi so v mapi backend/.../controller
 - uporabnik, geslo in ime baze so v datoteki .env (ta ni v gitu), application.properties jih samo prebere
-- vsa logika na frontendu je v App.jsx
+- klici na backend so v frontend/src/zaledje.js
 - tabele in testni podatki so v praktikum_baza.sql
 
 ## Navodila za nameščanje in zagon
@@ -116,6 +123,19 @@ Ob prvem zagonu se samodejno ustvarijo tabele in testni podatki. Z ukazom *docke
 Za povezavo na bazo (npr. v DataGripu) uporabiš host localhost, port 5432 ter ime baze, uporabnika in geslo iz .env.
 
 Če imaš na portu 5432 že kakšno drugo bazo, jo najprej ustavi.
+
+Skripta praktikum_baza.sql se izvede samo, ko se container ustvari prvič. Če se skripta spremeni (npr. nove tabele), moraš container in njegove podatke pobrisati in ga ustvariti znova (vsi podatki v bazi se izgubijo):
+
+*docker compose down -v*
+
+*docker compose up -d*
+
+Testni uporabniki v bazi (vsi imajo geslo *geslo123*, shranjeno kot bcrypt hash; prijave v aplikaciji še ni):
+- admin - vloga Administrator (zaenkrat nima dodatnih pravic)
+- ana - večina testnih stroškov
+- marko - nekaj stroškov
+
+Dokler prijava ni narejena, aplikacija prikaže stroške vseh uporabnikov, nove stroške pa shrani uporabniku, ki je nastavljen v application.properties (aplikacija.privzeti-uporabnik, privzeto ana).
 
 ### 4. Zagon backenda
 
