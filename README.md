@@ -19,9 +19,9 @@ Aplikacija ima tri dele: frontend (kar vidi uporabnik), backend (REST API) in ba
 Backend:
 - Java 21
 - Spring Boot 3.2.5 (Spring Web, Spring Data JPA, Validation)
-- PostgreSQL driver
+- Postgres: 16
 - Swagger (springdoc-openapi 2.2.0)
-- Maven (prek Maven Wrapperja, ki je že v projektu)
+- Maven 3.9.16 (prek Maven Wrapperja 3.3.4; Mavena ni treba namestiti posebej)
 
 Frontend:
 - React 19.3
@@ -36,41 +36,41 @@ Baza in orodja:
 - VS Code in DataGrip
 
 ## Struktura projekta
+```
+.
+├── backend/                                # Spring Boot aplikacija
+│   ├── src/main/java/com/example/backend/
+│   │   ├── BackendApplication.java         # zažene aplikacijo
+│   │   ├── controller/                     # kontrolerji z endpointi
+│   │   │   ├── KontrolerStrosek.java       # dodajanje, branje, urejanje, brisanje stroškov
+│   │   │   └── KontrolerKategorija.java    # vrne seznam kategorij
+│   │   ├── entitete/                       # entitete (tabele) in dostop do baze
+│   │   │   ├── Strosek.java                # tabela Strosek
+│   │   │   ├── Kategorija.java             # tabela Kategorija
+│   │   │   ├── StrosekBaza.java            # JpaRepository + findByKategorija
+│   │   │   └── KategorijaBaza.java         # JpaRepository
+│   │   └── config/
+│   │       └── CorsConfig.java             # dovoli, da frontend kliče backend
+│   ├── src/main/resources/
+│   │   └── application.properties          # povezava na bazo in Swagger
+│   └── pom.xml                             # knjižnice backenda
+├── frontend/                               # React aplikacija
+│   ├── src/
+│   │   ├── App.jsx                         # glavna komponenta (tabela, obrazec, filtri, strani)
+│   │   ├── Header.jsx                      # glava strani
+│   │   ├── main.jsx                        # vstopna točka
+│   │   └── index.css                       # stili
+│   └── package.json                        # knjižnice frontenda
+├── baza/baza-setup/
+│   ├── docker-compose.yml                  # zažene PostgreSQL v Dockerju
+│   └── praktikum_baza.sql                  # ustvari tabeli in vstavi testne podatke
+├── dokumentacija/                          # poročila vaj in screenshoti
+└── .env.example                            # predloga za okoljske spremenljivke (podatki za bazo)
+```
 
-Projekt je razdeljen na štiri glavne mape:
-
-- backend - Spring Boot aplikacija
-  - src/main/java/com/example/backend
-    - BackendApplication.java - zažene aplikacijo
-    - controller - java razredi/datoteke (kontrolerji), ki vsebujejo endpointe
-      - KontrolerStrosek.java - dodajanje, branje, urejanje in brisanje stroškov
-      - KontrolerKategorija.java - vrne seznam kategorij
-      - KontrolerNacinPlacila.java - vrne seznam načinov plačila
-      - ObravnavaNapak.java - napake pretvori v odgovor oblike {"message": "..."}, ki ga prikaže frontend
-    - entitete - razredi, ki predstavljajo tabele v bazi, in interface-i za dostop do baze
-      - Strosek.java, Kategorija.java, NacinPlacila.java, Uporabnik.java, Vloga.java - razredi za tabele v bazi
-      - StrosekBaza.java, KategorijaBaza.java, ... - interface-i, ki dedujejo od JpaRepository, zato že imajo osnovne metode za delo z bazo (findAll, findById, save, delete)
-        - StrosekBaza ima še svojo metodo findByKategorija, ki vrne stroške izbrane kategorije in njenih podkategorij
-    - config - CorsConfig.java, ki dovoli, da frontend kliče backend
-  - src/main/resources/application.properties - nastavitve za povezavo na bazo in Swagger
-  - pom.xml - seznam knjižnic, ki jih backend uporablja
-- frontend - React aplikacija
-  - src
-    - App.jsx - glavna komponenta
-    - StranStroski.jsx - stran s stroški (filtri, strani, nalaganje podatkov)
-    - TabelaStroskov.jsx, ObrazecNovStrosek.jsx, ModalUrejanjeStroska.jsx - tabela, obrazec za nov strošek in okno za urejanje
-    - PoljaStroska.jsx, IzbirniSeznam.jsx - polja obrazca, ki so skupna za dodajanje in urejanje
-    - zaledje.js - vsi klici na backend
-    - pomozneFunkcije.js - datum, čas, urejanje kategorij, pretvorba podatkov obrazca
-    - Header.jsx - glava strani
-    - main.jsx - vstopna točka
-    - index.css - stili
-  - package.json - seznam knjižnic, ki jih frontend uporablja
-- baza/baza-setup
-  - docker-compose.yml - zažene PostgreSQL v Dockerju
-  - praktikum_baza.sql - ustvari tabele (vloga, uporabnik, nacin_placila, kategorija, strosek) ter vstavi testne podatke (praktikum je samo ime datoteke, nima dejansko veze s praktikumom, ima le podobno konfiguracijo kot praktikum)
-- dokumentacija - poročila vaj in screenshoti
-- .env.example - predloga za okoljske spremenljivke (podatki za bazo)
+**Opombe:**
+- `StrosekBaza` in `KategorijaBaza` dedujeta od `JpaRepository`, zato že imata osnovne metode (`findAll`, `findById`, `save`, `deleteById`). `StrosekBaza` ima še `findByKategorija`, ki vrne samo stroške izbrane kategorije.
+- `praktikum_baza.sql` je samo ime datoteke. S praktikumom nima zveze, ima le podobno konfiguracijo.
 
 Kje so pomembne stvari:
 - endpointi so v mapi backend/.../controller
@@ -85,7 +85,7 @@ Kje so pomembne stvari:
 Na računalniku moraš imeti nameščeno:
 - Git,
 - Javo (JDK 21 ali novejšo),
-- Node.js 22 ali novejši (zraven pride tudi npm),
+- Node.js 22 ali novejši (zraven pride tudi npm) naložimo v mapo frontend,
 - Docker Desktop,
 - po želji DataGrip za pregled baze
 
@@ -109,7 +109,7 @@ Nato odpri .env in vpiši svoje podatke, npr.:
 
 To datoteko uporabljata oba, Docker (ko ustvari bazo) in backend (ko se poveže na bazo), zato podatke vpišeš samo enkrat.
 
-Poleg tega mora biti nastavljena sistemska spremenljivka JAVA_HOME, ki kaže na mapo, kjer je nameščena Java (npr. C:\Program Files\Java\jdk-21). Brez nje mvnw ne deluje. Preveriš jo z ukazom:
+Poleg tega **mora biti** nastavljena sistemska spremenljivka JAVA_HOME, ki kaže na mapo, kjer je nameščena Java (npr. C:\Program Files\Java\jdk-21). Brez nje mvnw ne deluje. Preveriš jo z ukazom:
 
 *echo %JAVA_HOME%*
 
@@ -143,7 +143,11 @@ V novem terminalu pojdi v mapo backend in poženi:
 
 *mvnw spring-boot:run*
 
-(Ukazi v teh navodilih so za cmd. Če uporabljaš PowerShell, npr. terminal v VS Code, napiši *.\mvnw spring-boot:run*.)
+ALI
+
+*mvn spring-boot:run* če imaš ustrezni Maven naložen
+
+(Ukazi v teh navodilih so za cmd. Če uporabljaš PowerShell, npr. terminal v VS Code, je isto samo z drugo sintakso recimo: *.\mvnw spring-boot:run*.)
 
 Backend teče na http://localhost:8080, seznam vseh endpointov pa je v Swaggerju na http://localhost:8080/swagger-ui.html
 
@@ -151,11 +155,11 @@ Backend teče na http://localhost:8080, seznam vseh endpointov pa je v Swaggerju
 
 V novem terminalu pojdi v mapo frontend in poženi:
 
-*npm install*
+*npm install* (če še nimaš) za node modules
 
 *npm run dev*
 
-Ukaz npm install je treba pognati samo prvič. Aplikacijo nato odpreš v brskalniku na http://localhost:5173
+Ukaz npm install je treba pognati samo prvič. Aplikacijo nato odpreš v brskalniku na **http://localhost:5173**
 
 Vrstni red zagona je pomemben: najprej baza, nato backend, na koncu frontend.
 
@@ -212,5 +216,14 @@ Prva vrstica naj bo kratka (do približno 50 znakov) in naj se začne s tipom sp
 
 ## Standardi kodiranja
 
-- imena spremenljivk, metod in razredov so v slovenščini, npr. dodajStrosek, izbranaKategorija
-- kjer koda ni takoj jasna in intuitivna, je zraven kratek komentar
+- imena spremenljivk, metod in razredov so v slovenščini in smiselno in intuitivno poimenovane, npr. dodajStrosek, izbranaKategorija in brez okrajšav recimo dodStros namesto dodajStrosek
+- če koda ni takoj jasna in intuitivna, je zraven kratek komentar, ki opiše delovanje drugače pa samo informativni komentar nad blokom kode (nepotrebni komentar ki opisuje to kar nam že pove sintaksa je odveč)
+- če si nek velik blok kode mergal na main vejo ali pa pač delaš na njem, zapiši kdaj je bil merge izveden, in kdo ga je izvedel, ter kdo je kodo pisal recimo ```//Merge 11.9.2026 Omar, feat: Filtriranje stroška po kategoriji"```
+- datoteka ni daljša od 400 vrstic
+- uporablja se camelCase poimenovanje recimo "dodajStrosek" (če sintaksa tega ne dovoli pa PascalCase recimo "DodajStrosek" namesto "dodajStrosek"
+- funkcije so čim krajše in čim enostavnejše, morajo opravljiti eno funkcijo, če je možno funkcijo razbiti na več delov, potem pišeš več funkcij
+- imena datotek so smiselna in intuitivna
+- preden se nadaljuje z razvojem je treba kodo ki je bila napisana stestirati, najlažje skozi Swagger, potem v datagripu ali kje drugje pogledati kako se baza obnaša in na koncu še ročno se postaviti v scenarij in feature stestirati v čim več možnih situacijah.
+- Pisanje SQL stavkov ali sintakse z velikimi črkami recimo: "SELECT * FROM strosek" namesto "select * from strosek"
+- Komentari za to do recimo "TODO: Popravi izgled forma za dodajanje stroška"
+- če je le možno se držimo exception handlinga torej try-catch stavkov, veliko krat boljše kot pa recimo ugnezdeni if stavki (enako stvar dosežemo z bolj pregledno kodo)
