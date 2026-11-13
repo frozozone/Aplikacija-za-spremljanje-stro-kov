@@ -91,11 +91,11 @@ PU4: urejanje in brisanje stroška\
 PU5: izbira kategorije\
 
 **Načrtovane funkcionalnosti:**\
-PU6: pregled statistike po kategorijah\
-PU7: vnos mesečnega  priliva\
-PU8: opozorilo o preseganju priporočenega limita\
-PU9: prikaz priporočenega maksimalnega stroška\
-PU10: upravljanje kategorij
+- PU6: pregled statistike po kategorijah
+- PU7: vnos mesečnega  priliva
+- PU8: opozorilo o preseganju priporočenega limita
+- PU9: prikaz priporočenega maksimalnega stroška
+- PU10: upravljanje kategorij
 
 Akterja:
 - Uporabnik, ki upravlja stroške in mesečni priliv ter vidi priporočeni limit
@@ -329,7 +329,7 @@ Prva vrstica naj bo kratka (do približno 50 znakov) in naj se začne s tipom sp
 
 - imena spremenljivk, metod in razredov so v slovenščini in smiselno in intuitivno poimenovane, npr. dodajStrosek, izbranaKategorija in brez okrajšav recimo dodStros namesto dodajStrosek
 - če koda ni takoj jasna in intuitivna, je zraven kratek komentar, ki opiše delovanje drugače pa samo informativni komentar nad blokom kode (nepotrebni komentar ki opisuje to kar nam že pove sintaksa je odveč)
-- če si nek velik blok kode mergal na main vejo ali pa pač delaš na njem, zapiši kdaj je bil merge izveden, in kdo ga je izvedel, ter kdo je kodo pisal recimo ```//Merge 11.9.2026 Omar, feat: Filtriranje stroška po kategoriji"```
+- če si nek velik blok kode mergal na main vejo ali pa pač delaš na njem, zapiši kdaj je bil merge izveden, in kdo ga je izvedel, ter kdo je kodo pisal recimo nekaj takega: ```//Merge 11.9.2026 Omar, feat: Filtriranje stroška po kategoriji"```
 - datoteka ni daljša od 400 vrstic
 - uporablja se camelCase poimenovanje recimo "dodajStrosek" (če sintaksa tega ne dovoli pa PascalCase recimo "DodajStrosek" namesto "dodajStrosek"
 - funkcije so čim krajše in čim enostavnejše, morajo opravljiti eno funkcijo, če je možno funkcijo razbiti na več delov, potem pišeš več funkcij
@@ -337,4 +337,4 @@ Prva vrstica naj bo kratka (do približno 50 znakov) in naj se začne s tipom sp
 - preden se nadaljuje z razvojem je treba kodo ki je bila napisana stestirati, najlažje skozi Swagger, potem v datagripu ali kje drugje pogledati kako se baza obnaša in na koncu še ročno se postaviti v scenarij in feature stestirati v čim več možnih situacijah.
 - Pisanje SQL stavkov ali sintakse z velikimi črkami recimo: "SELECT * FROM strosek" namesto "select * from strosek"
 - Komentari za to do recimo "TODO: Popravi izgled forma za dodajanje stroška"
-- če je le možno se držimo exception handlinga torej try-catch stavkov, veliko krat boljše kot pa recimo ugnezdeni if stavki (enako stvar dosežemo z bolj pregledno kodo)
+- če je le možno se držimo exception handlinga torej try-catch stavkov, v večino primerih boljši način kot pa recimo ugnezdeni if stavki (enako stvar dosežemo z bolj pregledno kodo)
