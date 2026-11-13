@@ -110,6 +110,8 @@ Povezave:
 - `<<extend>>`: iskanje in filtriranje (PU2) razširja pregled stroškov (PU1)
 - `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja urejanje stroška (PU3), vendar samo če strošek preseže dnevni limit
 
+## Podroben opis primerov uporabe:
+[Opis primerov uporabe](dokumentacija/Primeri_uporabe_PU-01_PU-10.pdf)
 ## Uporabljene tehnologije
 Backend:
 - Java 21
