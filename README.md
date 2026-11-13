@@ -83,14 +83,14 @@ Diagram prikazuje ključne funkcionalnosti v načrtovani različici aplikacije.
 
 ![Diagram primerov uporabe](dokumentacija/dpu.png)
 
-**Že implementirane funkcionalnosti:**\
-PU1: pregled stroškov\
-PU2: iskanje in filtriranje stroškov\
-PU3: dodajanje stroška\
-PU4: urejanje in brisanje stroška\
-PU5: izbira kategorije\
+**Že implementirane funkcionalnosti:**
+- PU1: pregled stroškov
+- PU2: iskanje in filtriranje stroškov
+- PU3: dodajanje stroška
+- PU4: urejanje in brisanje stroška
+- PU5: izbira kategorije
 
-**Načrtovane funkcionalnosti:**\
+**Načrtovane funkcionalnosti:**
 - PU6: pregled statistike po kategorijah
 - PU7: vnos mesečnega  priliva
 - PU8: opozorilo o preseganju priporočenega limita
