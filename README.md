@@ -14,6 +14,68 @@ Kaj aplikacija dela:
 - iskanje po nazivu
 
 Aplikacija ima tri dele: frontend (kar vidi uporabnik), backend (REST API) in bazo.
+## Vizija projekta
+
+### Opis rešitve
+
+Aplikacija je namenjena predvsem študentom, ki vsak mesec dobijo podoben znesek (npr. štipendija, žepnina, študentsko delo). Uporabna je tudi za vse druge, ki imajo reden mesečni priliv.
+
+Problem, ki ga rešuje: sredi meseca ugotoviš, da ti je ostalo npr. 30 €, do naslednjega priliva pa je še 10 ali 15 dni.
+
+Aplikacija ti zato vsak dan pove, koliko lahko še porabiš, da ti denar zdrži do konca meseca. Za nazaj pa pokaže, na kaj si denar porabil.
+
+Priporočeni dnevni limit se izračuna tako:
+
+*dnevni limit = (mesečni priliv − porabljeno ta mesec) / preostali dnevi v mesecu*
+
+Primer: če imaš 600 € priliva in si do 15. v mesecu porabil 300 €, ti za preostalih 15 dni ostane 300 €, torej 20 € na dan.
+
+Limit se vsak dan izračuna na novo. Če danes porabiš manj, je jutri limit višji, če porabiš več, je nižji.
+
+#### Ključne funkcionalnosti
+
+Že narejeno:
+- pregled stroškov po straneh (PU1),
+- iskanje po nazivu in filtriranje po kategoriji (PU2),
+- dodajanje, urejanje in brisanje stroškov z izbiro kategorije (PU3, PU4, PU5)
+
+Načrtovano:
+- vnos mesečnega priliva (PU7),
+- prikaz priporočenega dnevnega limita (PU9),
+- opozorilo, če z novim stroškom presežeš dnevni limit (PU8),
+- pregled porabe po kategorijah za tekoči mesec (PU6); če je stroškov premalo, se izpiše sporočilo "premalo podatkov",
+- upravljanje kategorij, ki ga opravlja administrator (PU10)
+
+### Obseg rešitve in morebitne omejitve
+
+Aplikacija pokriva vnos stroškov, izračun dnevnega limita in pregled porabe za tekoči koledarski mesec.
+
+Omejitve:
+- stroške vnašaš ročno, povezave z banko ni,
+- podprta je ena valuta, obdobje je vedno koledarski mesec,
+- namenjena je rednim mesečnim prilivom; pri nerednih (npr. honorarji) limit ni smiseln,
+- limit je samo priporočilo, aplikacija vnosa stroška ne prepreči,
+- limit je točen šele, ko so vneseni večji stroški (npr. najemnina), zato jih je najbolje vnesti takoj na začetku meseca,
+- varčevalnih ciljev ni; če želiš nekaj prihraniti, vpišeš ustrezno nižji priliv,
+- večmesečnih trendov in napovedi ni,
+- prijave uporabnikov še ni, zato priliv in limit veljata za privzetega uporabnika
+
+### Besednjak
+
+| Izraz | Razlaga |
+|---|---|
+| **Strošek** | En vnos porabljenega denarja z nazivom, zneskom, datumom, kategorijo in načinom plačila (čas in opis sta neobvezna). Npr. "Kosilo, 12,00 €, 7. 6. 2026, Restavracije, plačilna kartica". |
+| **Kategorija** | Glavna skupina, v katero razvrstiš strošek, da vidiš, za kaj zapravljaš. Npr. Hrana in pijača, Prevoz, Zabava. |
+| **Podkategorija** | Natančnejša kategorija znotraj glavne kategorije; filter po glavni kategoriji pokaže tudi stroške njenih podkategorij. Npr. Prevoz > Gorivo. |
+| **Način plačila** | Kako je bil strošek plačan. Npr. gotovina, plačilna kartica ali bančno nakazilo. |
+| **Mesečni priliv** | Znesek, ki ga uporabnik redno dobi vsak mesec in iz katerega se računa dnevni limit. Npr. štipendija 600 €. |
+| **Porabljeno ta mesec** | Vsota vseh uporabnikovih stroškov od začetka tekočega koledarskega meseca do danes. |
+| **Preostali znesek** | Koliko denarja še ostane do konca meseca (mesečni priliv − porabljeno ta mesec). Npr. 600 € − 300 € = 300 €. |
+| **Preostali dnevi** | Število dni, ki jih je treba še pokriti do konca tekočega meseca. Npr. v 30-dnevnem mesecu jih je po 15. dnevu še 15. |
+| **Priporočeni dnevni limit** | Znesek, ki ga lahko porabiš na dan, da ti denar zdrži do konca meseca (preostali znesek / preostali dnevi); vsak dan se izračuna na novo. Npr. 300 € / 15 dni = 20 € na dan. |
+| **Preseganje limita** | Ko bi z novim stroškom porabil več od priporočenega limita, te aplikacija opozori, vnosa pa ne prepreči. Npr. limit je 20 €, vneseš strošek 35 €. |
+| **Uporabnik** | Oseba z računom v aplikaciji, ki vnaša in pregleduje svoje stroške ter mesečni priliv. Npr. testni račun ana. |
+| **Administrator** | Uporabnik z vlogo Administrator, ki poleg tega upravlja kategorije in podkategorije (zaenkrat še nima dodatnih pravic). Npr. testni račun admin. |
 
 ## Diagram primerov uporabe (DPU)
 
@@ -40,7 +102,7 @@ Akterja:
 - Administrator, ki upravlja kategorije
 
 Povezave:
-- `<<include>>`: dodajanje (PU3) in urejanje stroška (PU4) vedno vklučujeta izbiro kategorije (PU5)
+- `<<include>>`: dodajanje (PU3) in urejanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
 - `<<extend>>`: iskanje in filtriranje (PU2) razširja pregled stroškov (PU1), opozorilo o preseganju priporočenega limita (PU8), vendar samo če strošek preseže dnevni ali mesečni limit
 
 ## Uporabljene tehnologije
@@ -71,33 +133,54 @@ Baza in orodja:
 │   │   ├── BackendApplication.java         # zažene aplikacijo
 │   │   ├── controller/                     # kontrolerji z endpointi
 │   │   │   ├── KontrolerStrosek.java       # dodajanje, branje, urejanje, brisanje stroškov
-│   │   │   └── KontrolerKategorija.java    # vrne seznam kategorij
+│   │   │   ├── KontrolerKategorija.java    # vrne seznam kategorij
+│   │   │   ├── KontrolerNacinPlacila.java  # vrne seznam načinov plačila
+│   │   │   └── ObravnavaNapak.java         # napake iz kontrolerjev vrne kot {"message": "..."}
 │   │   ├── entitete/                       # entitete (tabele) in dostop do baze
-│   │   │   ├── Strosek.java                # tabela Strosek
-│   │   │   ├── Kategorija.java             # tabela Kategorija
+│   │   │   ├── Strosek.java                # tabela strosek
+│   │   │   ├── Kategorija.java             # tabela kategorija (z nadrejeno kategorijo)
+│   │   │   ├── NacinPlacila.java           # tabela nacin_placila
+│   │   │   ├── Uporabnik.java              # tabela uporabnik
+│   │   │   ├── Vloga.java                  # tabela vloga
 │   │   │   ├── StrosekBaza.java            # JpaRepository + findByKategorija
-│   │   │   └── KategorijaBaza.java         # JpaRepository
+│   │   │   ├── KategorijaBaza.java         # JpaRepository + kategorije po abecedi
+│   │   │   ├── NacinPlacilaBaza.java       # JpaRepository + načini plačila po abecedi
+│   │   │   └── UporabnikBaza.java          # JpaRepository + iskanje po uporabniškem imenu
 │   │   └── config/
 │   │       └── CorsConfig.java             # dovoli, da frontend kliče backend
 │   ├── src/main/resources/
-│   │   └── application.properties          # povezava na bazo in Swagger
+│   │   └── application.properties          # povezava na bazo, Swagger in privzeti uporabnik
+│   ├── mvnw, mvnw.cmd                      # Maven Wrapper
 │   └── pom.xml                             # knjižnice backenda
 ├── frontend/                               # React aplikacija
 │   ├── src/
-│   │   ├── App.jsx                         # glavna komponenta (tabela, obrazec, filtri, strani)
-│   │   ├── Header.jsx                      # glava strani
 │   │   ├── main.jsx                        # vstopna točka
+│   │   ├── App.jsx                         # ogrodje strani (glava + stran s stroški)
+│   │   ├── Header.jsx                      # glava strani
+│   │   ├── StranStroski.jsx                # glavna stran: nalaganje podatkov, iskanje, filter, strani
+│   │   ├── TabelaStroskov.jsx              # tabela stroškov z gumboma za urejanje in brisanje
+│   │   ├── ObrazecNovStrosek.jsx           # obrazec za dodajanje stroška
+│   │   ├── ModalUrejanjeStroska.jsx        # okno za urejanje stroška
+│   │   ├── PoljaStroska.jsx                # polja, skupna obrazcu in oknu za urejanje
+│   │   ├── IzbirniSeznam.jsx               # spustni seznam (kategorije, načini plačila)
+│   │   ├── pomozneFunkcije.js              # datum, čas, preverjanje obrazca, izpis zneska
+│   │   ├── zaledje.js                      # vsi klici na backend
 │   │   └── index.css                       # stili
+│   ├── vite.config.js                      # nastavitve Vite
 │   └── package.json                        # knjižnice frontenda
 ├── baza/baza-setup/
 │   ├── docker-compose.yml                  # zažene PostgreSQL v Dockerju
-│   └── praktikum_baza.sql                  # ustvari tabeli in vstavi testne podatke
-├── dokumentacija/                          # poročila vaj in screenshoti
+│   └── praktikum_baza.sql                  # ustvari tabele in vstavi testne podatke
+├── dokumentacija/
+│   ├── dpu.png                             # diagram primerov uporabe
+│   ├── screenshoti/                        # screenshoti testiranja endpointov
+│   └── *_vaja1.MD                          # poročilo vaje
 └── .env.example                            # predloga za okoljske spremenljivke (podatki za bazo)
 ```
 
 **Opombe:**
-- `StrosekBaza` in `KategorijaBaza` dedujeta od `JpaRepository`, zato že imata osnovne metode (`findAll`, `findById`, `save`, `deleteById`). `StrosekBaza` ima še `findByKategorija`, ki vrne samo stroške izbrane kategorije.
+- Vse `...Baza` datoteke dedujejo od `JpaRepository`, zato že imajo osnovne metode (`findAll`, `findById`, `save`, `deleteById`). `StrosekBaza` ima še `findByKategorija`, ki vrne stroške izbrane kategorije in vseh njenih podkategorij.
+- Tabele v bazi so: `strosek`, `kategorija`, `nacin_placila`, `uporabnik` in `vloga`.
 - `praktikum_baza.sql` je samo ime datoteke. S praktikumom nima zveze, ima le podobno konfiguracijo.
 
 Kje so pomembne stvari:
