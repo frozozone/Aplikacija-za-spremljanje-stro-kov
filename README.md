@@ -87,27 +87,28 @@ Diagram prikazuje ključne funkcionalnosti v načrtovani različici aplikacije.
 
 ![Diagram primerov uporabe](dokumentacija/dpu.png)
 
-**Že implementirane funkcionalnosti:**
-- PU1: pregled stroškov
-- PU2: iskanje in filtriranje stroškov
-- PU3: dodajanje stroška
-- PU4: urejanje in brisanje stroška
-- PU5: izbira kategorije
+**Že implementirane funkcionalnosti:**\
+PU1: pregled stroškov\
+PU2: iskanje in filtriranje stroškov\
+PU3: dodajanje stroška\
+PU4: urejanje in brisanje stroška\
+PU5: izbira kategorije
 
-**Načrtovane funkcionalnosti:**
-- PU6: pregled statistike po kategorijah
-- PU7: vnos mesečnega  priliva
-- PU8: opozorilo o preseganju priporočenega limita
-- PU9: prikaz priporočenega maksimalnega stroška
-- PU10: upravljanje kategorij
+**Načrtovane funkcionalnosti:**\
+PU6: pregled statistike po kategorijah\
+PU7: vnos mesečnega  priliva\
+PU8: opozorilo o preseganju priporočenega dnevnega limita\
+PU9: prikaz priporočenega dnevnega limita\
+PU10: upravljanje kategorij
 
 Akterja:
-- Uporabnik, ki upravlja stroške in mesečni priliv ter vidi priporočeni limit
+- Uporabnik, ki upravlja stroške in mesečni priliv ter vidi priporočeni dnevni limit
 - Administrator, ki upravlja kategorije
 
 Povezave:
 - `<<include>>`: dodajanje (PU3) in urejanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
-- `<<extend>>`: iskanje in filtriranje (PU2) razširja pregled stroškov (PU1), opozorilo o preseganju priporočenega limita (PU8), vendar samo če strošek preseže dnevni ali mesečni limit
+- `<<extend>>`: iskanje in filtriranje (PU2) razširja pregled stroškov (PU1)
+- `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja urejanje stroška (PU3), vendar samo če strošek preseže dnevni limit
 
 ## Uporabljene tehnologije
 Backend:
