@@ -14,6 +14,10 @@ Kaj aplikacija dela:
 - iskanje po nazivu
 
 Aplikacija ima tri dele: frontend (kar vidi uporabnik), backend (REST API) in bazo.
+## Imena članov ekipe
+- Omar Gušmirović
+- Mojca Ivanovič Kopecky
+- Patrik Martinec
 ## Vizija projekta
 
 ### Opis rešitve
