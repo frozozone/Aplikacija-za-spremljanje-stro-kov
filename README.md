@@ -109,6 +109,7 @@ Povezave:
 - `<<include>>`: urejanje stroška (PU3) ter dodajanje in brisanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
 - `<<extend>>`: iskanje in filtriranje stroškov (PU2) razširja pregled stroškov (PU1)
 - `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja urejanje stroška (PU3), vendar samo če strošek preseže dnevni limit
+- `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja dodajanje in brisanje stroška (PU4), vendar samo če strošek preseže dnevni limit
 
 ## Podroben opis primerov uporabe:
 [Opis primerov uporabe](docs/DPU/Primeri_uporabe_PU-01_PU-10.pdf)
