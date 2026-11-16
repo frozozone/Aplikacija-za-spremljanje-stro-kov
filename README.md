@@ -41,7 +41,7 @@ Limit se vsak dan izračuna na novo. Če danes porabiš manj, je jutri limit vi�
 Že narejeno:
 - pregled stroškov po straneh (PU1),
 - iskanje po nazivu in filtriranje po kategoriji (PU2),
-- dodajanje, urejanje in brisanje stroškov z izbiro kategorije (PU3, PU4, PU5)
+- urejanje (PU3), dodajanje in brisanje stroškov (PU4) z izbiro kategorije (PU5)
 
 Načrtovano:
 - vnos mesečnega priliva (PU7),
@@ -90,13 +90,13 @@ Diagram prikazuje ključne funkcionalnosti v načrtovani različici aplikacije.
 **Že implementirane funkcionalnosti:**\
 PU1: pregled stroškov\
 PU2: iskanje in filtriranje stroškov\
-PU3: dodajanje stroška\
-PU4: urejanje in brisanje stroška\
+PU3: urejanje stroška\
+PU4: dodajanje in brisanje stroška\
 PU5: izbira kategorije
 
 **Načrtovane funkcionalnosti:**\
 PU6: pregled statistike po kategorijah\
-PU7: vnos mesečnega  priliva\
+PU7: vnos mesečnega priliva\
 PU8: opozorilo o preseganju priporočenega dnevnega limita\
 PU9: prikaz priporočenega dnevnega limita\
 PU10: upravljanje kategorij
@@ -106,8 +106,8 @@ Akterja:
 - Administrator, ki upravlja kategorije
 
 Povezave:
-- `<<include>>`: dodajanje (PU3) in urejanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
-- `<<extend>>`: iskanje in filtriranje (PU2) razširja pregled stroškov (PU1)
+- `<<include>>`: urejanje stroška (PU3) ter dodajanje in brisanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
+- `<<extend>>`: iskanje in filtriranje stroškov (PU2) razširja pregled stroškov (PU1)
 - `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja urejanje stroška (PU3), vendar samo če strošek preseže dnevni limit
 
 ## Podroben opis primerov uporabe:
