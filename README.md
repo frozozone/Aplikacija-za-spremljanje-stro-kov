@@ -85,7 +85,7 @@ Omejitve:
 
 Diagram prikazuje ključne funkcionalnosti v načrtovani različici aplikacije.
 
-![Diagram primerov uporabe](dokumentacija/dpu.png)
+![Diagram primerov uporabe](docs/DPU/dpu.png)
 
 **Že implementirane funkcionalnosti:**\
 PU1: pregled stroškov\
@@ -111,7 +111,9 @@ Povezave:
 - `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja urejanje stroška (PU3), vendar samo če strošek preseže dnevni limit
 
 ## Podroben opis primerov uporabe:
-[Opis primerov uporabe](dokumentacija/Primeri_uporabe_PU-01_PU-10.pdf)
+[Opis primerov uporabe](docs/DPU/Primeri_uporabe_PU-01_PU-10.pdf)
+## Uporabniške zgodbe:
+[Uporabniške zgodbe](docs/user-stories.md)
 ## Uporabljene tehnologije
 Backend:
 - Java 21
@@ -178,7 +180,7 @@ Baza in orodja:
 ├── baza/baza-setup/
 │   ├── docker-compose.yml                  # zažene PostgreSQL v Dockerju
 │   └── praktikum_baza.sql                  # ustvari tabele in vstavi testne podatke
-├── dokumentacija/
+├── docs/
 │   ├── dpu.png                             # diagram primerov uporabe
 │   ├── screenshoti/                        # screenshoti testiranja endpointov
 │   └── *_vaja1.MD                          # poročilo vaje

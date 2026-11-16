@@ -1,8 +1,10 @@
 node_modules/
 
-#Poročila za vaje
+#Poročila za vaje + nepomembno za repo
 *.docx
+!docs/DPU/*.docx
 *.zip
+6. vaja.md
 
 #Povezava do repozitorija
 Povezava do repozitorija.pdf
