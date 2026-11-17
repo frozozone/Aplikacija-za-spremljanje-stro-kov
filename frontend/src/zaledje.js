@@ -26,7 +26,9 @@ const posljiZahtevo = async (pot, nastavitve = {}) => {
     throw new Error("Strežnik ni dosegljiv. Ali backend teče?");
   }
   if (!odgovor.ok) {
-    throw new Error(await preberiSporociloNapake(odgovor));
+    const napaka = new Error(await preberiSporociloNapake(odgovor));
+    napaka.status = odgovor.status; //status shranimo, da lahko klicatelj loci vrste napak (npr. 404 pri dnevnem limitu)
+    throw napaka;
   }
   return preberiTelo(odgovor);
 };
@@ -49,3 +51,5 @@ export const naloziStroske = (stran, velikost, kategorijaId) => {
 export const dodajStrosek = (strosek) => posljiJson("/strosek", "POST", strosek);
 export const posodobiStrosek = (id, strosek) => posljiJson(`/strosek/${id}`, "PUT", strosek);
 export const izbrisiStrosek = (id) => posljiZahtevo(`/strosek/${id}`, { method: "DELETE" });
+//dnevni limit za danes, napaka 404 pomeni, da priliv za tekoci mesec se ni vnesen
+export const naloziDnevniLimit = () => posljiZahtevo("/dnevni-limit");
