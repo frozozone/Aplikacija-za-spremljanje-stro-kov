@@ -5,6 +5,7 @@ import ObrazecNovStrosek from "./ObrazecNovStrosek";
 import TabelaStroskov from "./TabelaStroskov";
 import * as zaledje from "./zaledje";
 import { urediKategorijeHierarhicno } from "./pomozneFunkcije";
+import KarticaDnevniLimit from "./KarticaDnevniLimit";
 
 const VELIKOST_STRANI = 10; //koliko stroskov se prikaze na eni strani
 
@@ -17,6 +18,8 @@ function StranStroski() {
   const [strosekZaUrejanje, setStrosekZaUrejanje] = useState(null); //null pomeni, da okno za urejanje ni odprto
   const [stran, setStran] = useState(0); //trenutna stran, steje se od 0 naprej
   const [steviloStrani, setSteviloStrani] = useState(0); //koliko strani je vseh skupaj
+  const [dnevniLimit, setDnevniLimit] = useState(null); //odgovor GET /dnevni-limit, null dokler se ne nalozi
+  const [napakaLimita, setNapakaLimita] = useState(null); //napaka pri nalaganju limita, null ce je vse v redu
 
   const obravnavajNapako = useCallback((napaka) => {
     console.error("Napaka:", napaka);
@@ -33,12 +36,29 @@ function StranStroski() {
     setSteviloStrani(data.totalPages); //za napis "stran 1/4" in gumb Naslednja
   }, []);
 
-  //ponovno nalozi stroske iz zaledja (po dodajanju, urejanju, brisanju)
+  //nalozi dnevni limit iz zaledja
+  //napak ne obravnavamo z alert-om (obravnavajNapako), ker je npr. manjkajoci priliv normalno stanje,
+  //ki ga lepo pokaze kartica sama
+  const osveziDnevniLimit = useCallback(() => {
+    zaledje.naloziDnevniLimit()
+        .then((limit) => {
+          setDnevniLimit(limit);
+          setNapakaLimita(null);
+        })
+        .catch((napaka) => {
+          setDnevniLimit(null);
+          setNapakaLimita(napaka);
+        });
+  }, []);
+
+  //ponovno nalozi stroske in dnevni limit iz zaledja (po dodajanju, urejanju, brisanju)
+  //limit osvezujemo skupaj s stroski, ker vsaka sprememba stroska spremeni tudi limit
   const osvezi = useCallback(() => {
     zaledje.naloziStroske(stran, VELIKOST_STRANI, izbranaKategorija)
-      .then(prikaziStroske)
-      .catch(obravnavajNapako);
-  }, [stran, izbranaKategorija, prikaziStroske, obravnavajNapako]);
+        .then(prikaziStroske)
+        .catch(obravnavajNapako);
+    osveziDnevniLimit();
+  }, [stran, izbranaKategorija, prikaziStroske, obravnavajNapako, osveziDnevniLimit]);
 
   //sifranta (kategorije in nacini placila) nalozimo samo enkrat ob zagonu
   useEffect(() => {
@@ -127,6 +147,7 @@ function StranStroski() {
         </div>
       </div>
       <div className="col-lg-4">
+        <KarticaDnevniLimit dnevniLimit={dnevniLimit} napaka={napakaLimita} />
         <ObrazecNovStrosek kategorije={kategorije} naciniPlacila={naciniPlacila} obDodaj={dodajStrosek} />
       </div>
       {strosekZaUrejanje && (

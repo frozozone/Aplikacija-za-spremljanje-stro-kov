@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS kategorija CASCADE;
 DROP TABLE IF EXISTS nacin_placila CASCADE;
 DROP TABLE IF EXISTS uporabnik CASCADE;
 DROP TABLE IF EXISTS vloga CASCADE;
+DROP TABLE IF EXISTS priliv CASCADE;
 
 
 --1. VLOGA - sifrant vlog (Uporabnik, Administrator)
@@ -72,6 +73,18 @@ CREATE TABLE strosek(
     FOREIGN KEY (id_uporabnik) REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
     FOREIGN KEY (id_kategorija) REFERENCES kategorija(id_kategorija),
     FOREIGN KEY (id_nacin_placila) REFERENCES nacin_placila(id_nacin_placila)
+);
+
+-- tabela priliv je zacasna za US-2, pri merge z vejo US-1 obdrzimo tisto verzijo
+--6. PRILIV - mesecni priliv uporabnika, en znesek na mesec
+    CREATE TABLE priliv(
+        id_priliv SERIAL PRIMARY KEY,
+        id_uporabnik INTEGER NOT NULL UNIQUE,
+        leto INTEGER NOT NULL UNIQUE,
+        mesec INTEGER NOT NULL CHECK (mesec BETWEEN 1 AND 12) UNIQUE,
+        znesek NUMERIC(10, 2) NOT NULL CHECK (znesek > 0),
+
+        FOREIGN KEY (id_uporabnik) REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE
 );
 
 --skoraj vedno iscemo stroske enega uporabnika
@@ -167,3 +180,14 @@ INSERT INTO strosek (id_uporabnik, id_kategorija, id_nacin_placila, naziv, znese
 (3,  3, 2, 'Družabna igra',             24.99, '2026-06-28', '14:50:00', 'Darilo zase'),
 --admin (id 1)
 (1, 10, 3, 'Gostovanje strežnika',      15.00, '2026-06-30', '09:00:00', 'Testni strošek administratorja');
+
+--testni podatki za dnevni limit: priliv in stroski za ano v tekocem mesecu
+--primer: priliv 600, do vceraj porabljeno 300, danes 12 -> dnevni limit 20, danes lahko porabi se 8
+--(na prvi dan v mesecu se najemnina in nakup stejeta kot danasnja poraba)
+INSERT INTO priliv (id_uporabnik, leto, mesec, znesek) VALUES
+    (2, EXTRACT(YEAR FROM CURRENT_DATE)::int, EXTRACT(MONTH FROM CURRENT_DATE)::int, 600.00);
+
+INSERT INTO strosek (id_uporabnik, id_kategorija, id_nacin_placila, naziv, znesek, datum, cas, opis) VALUES
+(2, 18, 3, 'Najemnina ta mesec',  250.00, date_trunc('month', CURRENT_DATE)::date, '09:00:00', 'Testni podatek za dnevni limit'),
+(2, 11, 2, 'Nakup ta mesec',       50.00, date_trunc('month', CURRENT_DATE)::date, '16:10:00', 'Testni podatek za dnevni limit'),
+(2, 12, 2, 'Kosilo danes',         12.00, CURRENT_DATE,                            '12:30:00', 'Testni podatek za dnevni limit');
