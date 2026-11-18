@@ -176,3 +176,48 @@ preko obstoječega ```ObravnavaNapak.java```
 - Pri preseženemu prilivu se limit ne prikaže kot 0€
 - US-3 uporablja isti `GET /dnevni-limit` za preverjanje pri shranjevanju stroška
 
+## US-3: Opozorilo o preseganju limita
+
+### 1. Uporabniška zgodba
+
+Kot uporabnik z omejenim dnevnim proračunom želim prejeti opozorilo ob dodajanju ali urejanju stroška, če ta preseže moj dnevni limit, da lahko presodim in se odločim, ali ga vseeno shranim.
+
+### 2. Sprejemni kriteriji (Acceptance Criteria)
+
+1. **Dodajanje znotraj limita (brez opozorila)**
+    - **Given:** danes je 17. 11. 2026, porabljenih je bilo že 12€, dnevni limit je 21€
+    - **When:** uporabnik doda strošek v višini 5€ in klikne Shrani
+    - **Then:** opozorilo se ne prikaže in strošek se shrani
+
+2. **Limit presežen pri dodajanju in potrditev**
+    - **Given:** danes je 17. 11. 2026, porabljenih je bilo že 12€, dnevni limit je 21€
+    - **When:** uporabnik doda strošek 15€, klikne Shrani, ko se pojavi opozorilno okno izbere "Shrani vseeno"
+    - **Then:** prikaže se opozorilo, da vnos presega dnevni limit za 6€, po kliku na "Shrani vseeno" pa se strošek shrani
+
+3. **Limit presežen pri dodajanju in preklic**
+    - **Given:** danes je 17. 11. 2026, porabljenih je bilo že 12€, dnevni limit je 21€
+    - **When:** uporabnik doda strošek 15€, klikne Shrani in v opozorilnem oknu izbere "Prekliči"
+    - **Then:** vnos se ne shrani in uporabnik ostane na strani za dodajanje stroška, opozorilno okno se zapre.
+
+4. **Urejanje današnjega stroška**
+    - **Given:** danes je 17. 11. 2026, porabljenih je bilo že 12€, dnevni limit je 21€
+    - **When:** uporabnik uredi ta strošek na 15€ in klikne Shrani (skupna poraba 18€ ne presega 21€)
+    - **Then:** sprememba se shrani, opozorilo se ne prikaže
+
+5. **Neveljaven vnos zneska (scenarij napake)**
+    - **Given:** uporabnik vnese znesek stroška 0€ ali -5€
+    - **When:** uporabnik klikne Shrani
+    - **Then:** prikaže napako, da mora biti znesek večji od 0, strošek se ne shrani
+
+### 3. Podrobnosti implementacije
+
+- **Baza:** sprememb sprememb. V SQL za testiranje dodamo priliv (`200.00 €`) in testne stroške (`100.00 €` do včeraj, `15.00 €` danes) za privzetega uporabnika `ana`.
+- **Backend:** Nov endpoint ni potreben; kliče se `GET /dnevni-limit` (US-2) ter `POST /stroski` in `PUT /stroski/{id}`. Če priliv še ni nastavljen (`404`), se strošek shrani brez opozorila.
+- **Frontend:**
+    - Nova komponenta `OpozoriloLimitModal.jsx` z informacijo o preseženem znesku in podrobnejšim opisom _"Ta mesec si priliv presegel za x €"_, če je priliv presežen ter gumboma **"Shrani vseeno"** in **"Prekliči"**.
+    - Preden se shrani, preveri, če je dnevni limit presežen. **današnje** stroške pokliče `GET /dnevni-limit` (prek `zaledje.js`).
+    - Opozorilo se odpre, če velja:
+        - **Dodajanje:** `porabljenoDanes + novZnesek > dnevniLimit`
+        - **Urejanje današnjega stroška:** `(porabljenoDanes - stariZnesek) + novZnesek > dnevniLimit`
+    - Zahteva na backend (`POST`/`PUT`) se pošlje šele po kliku na **"Shrani vseeno"**; ob kliku na **"Prekliči"** se okno ne shrani.
+
