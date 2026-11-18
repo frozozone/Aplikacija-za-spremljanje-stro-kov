@@ -86,6 +86,10 @@ preko obstoječega ```ObravnavaNapak.java```
 - besedilo (status) "Mesečni priliv za november 2026: 400€" in prikaz napak
 - funkciji ```naloziPriliv``` in ```shraniPriliv``` v ```zaledje.js``` (povezava in klici na beckend so na enem mestu)
 
+### Dodatna razlaga
+
+- Obrazec omogoča vnos samo za tekoči mesec, ker je za aplikacijo v tej fazi relevanten samo en koledarski mesec
+
 # US-2: Prikaz priporočenega dnevnega limita (PU9)
 
 **Odgovorni član:** Mojca Ivanovič Kopecky
@@ -171,8 +175,4 @@ preko obstoječega ```ObravnavaNapak.java```
 - Dnevni limit se zaokroži navzdol, da priporočen limit nikoli ni previsoko
 - Pri preseženemu prilivu se limit ne prikaže kot 0€
 - US-3 uporablja isti `GET /dnevni-limit` za preverjanje pri shranjevanju stroška
-
-### Dodatna razlaga
-
-- Obrazec omogoča vnos samo za tekoči mesec, ker je za aplikacijo v tej fazi relevanten samo en koledarski mesec
 
