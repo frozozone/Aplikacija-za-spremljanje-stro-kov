@@ -53,3 +53,8 @@ export const posodobiStrosek = (id, strosek) => posljiJson(`/strosek/${id}`, "PU
 export const izbrisiStrosek = (id) => posljiZahtevo(`/strosek/${id}`, { method: "DELETE" });
 //dnevni limit za danes, napaka 404 pomeni, da priliv za tekoci mesec se ni vnesen
 export const naloziDnevniLimit = () => posljiZahtevo("/dnevni-limit");
+
+export const naloziPriliv = () => posljiZahtevo("/priliv");
+
+//shrani priliv za tekoči mesec, ce obstaja ga backend posodobi
+export const shraniPriliv = (znesek) => posljiJson("/priliv", "PUT", {znesek});
