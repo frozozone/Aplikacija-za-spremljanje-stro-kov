@@ -41,7 +41,7 @@ Vsi razširjajo JpaRepository, ki že vsebuje osnovne operacije (findAll, findBy
 - `KontrolerStatistika`:
 - `ObravnavaNapak`:
 
-### record
+### record:
 - `DnevniLimitOdgovor`:
 - `PrilivZahteva`:
 - `OpozoriloOdgovor`:
