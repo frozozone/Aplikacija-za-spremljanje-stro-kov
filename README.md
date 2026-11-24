@@ -114,6 +114,8 @@ Povezave:
 [Opis primerov uporabe](docs/DPU/Primeri_uporabe_PU-01_PU-10.pdf)
 ## Uporabniške zgodbe:
 [Uporabniške zgodbe](docs/user-stories.md)
+## Razredni diagram:
+[Razredni diagram](docs/class_diagram.md)
 ## Uporabljene tehnologije
 Backend:
 - Java 21
