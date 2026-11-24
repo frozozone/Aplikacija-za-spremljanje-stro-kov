@@ -26,7 +26,7 @@ Aplikacija je namenjena predvsem študentom, ki vsak mesec dobijo podoben znesek
 
 Problem, ki ga rešuje: sredi meseca ugotoviš, da ti je ostalo npr. 30 €, do naslednjega priliva pa je še 10 ali 15 dni.
 
-Aplikacija ti zato vsak dan pove, koliko lahko še porabiš, da ti denar zdrži do konca meseca. Za nazaj pa pokaže, na kaj si denar porabil.
+Aplikacija ti zato vsak dan pove, koliko lahko še porabiš oz. dnevni limit, da ti denar zdrži do konca meseca. Za nazaj pa pokaže, za kaj si denar porabil.
 
 Priporočeni dnevni limit se izračuna tako:
 
@@ -34,7 +34,7 @@ Priporočeni dnevni limit se izračuna tako:
 
 Primer: če imaš 600 € priliva in si do 15. v mesecu porabil 300 €, ti za preostalih 15 dni ostane 300 €, torej 20 € na dan.
 
-Limit se vsak dan izračuna na novo. Če danes porabiš manj, je jutri limit višji, če porabiš več, je nižji.
+Dnevni limit se vsak dan izračuna na novo. Če danes porabiš manj, je jutri dnevni limit višji, če porabiš več, je nižji.
 
 #### Ključne funkcionalnosti
 
@@ -55,7 +55,7 @@ Načrtovano:
 Aplikacija pokriva vnos stroškov, izračun dnevnega limita in pregled porabe za tekoči koledarski mesec.
 
 Omejitve:
-- stroške vnašaš ročno, povezave z banko ni,
+- stroške uporabnik vnaša ročno, povezave z banko ni,
 - podprta je ena valuta, obdobje je vedno koledarski mesec,
 - namenjena je rednim mesečnim prilivom; pri nerednih (npr. honorarji) limit ni smiseln,
 - limit je samo priporočilo, aplikacija vnosa stroška ne prepreči,
@@ -78,8 +78,8 @@ Omejitve:
 | **Preostali dnevi** | Število dni, ki jih je treba še pokriti do konca tekočega meseca. Npr. v 30-dnevnem mesecu jih je po 15. dnevu še 15. |
 | **Priporočeni dnevni limit** | Znesek, ki ga lahko porabiš na dan, da ti denar zdrži do konca meseca (preostali znesek / preostali dnevi); vsak dan se izračuna na novo. Npr. 300 € / 15 dni = 20 € na dan. |
 | **Preseganje limita** | Ko bi z novim stroškom porabil več od priporočenega limita, te aplikacija opozori, vnosa pa ne prepreči. Npr. limit je 20 €, vneseš strošek 35 €. |
-| **Uporabnik** | Oseba z računom v aplikaciji, ki vnaša in pregleduje svoje stroške ter mesečni priliv. Npr. testni račun ana. |
-| **Administrator** | Uporabnik z vlogo Administrator, ki poleg tega upravlja kategorije in podkategorije (zaenkrat še nima dodatnih pravic). Npr. testni račun admin. |
+| **Uporabnik** | Oseba z računom v aplikaciji, ki vnaša in pregleduje svoje stroške ter mesečni priliv. |
+| **Administrator** | Uporabnik z vlogo Administrator, ki poleg tega upravlja kategorije in podkategorije. |
 
 ## Diagram primerov uporabe (DPU)
 
