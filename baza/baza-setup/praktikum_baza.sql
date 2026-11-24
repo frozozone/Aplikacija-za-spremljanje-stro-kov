@@ -79,12 +79,11 @@ CREATE TABLE strosek(
 --6. PRILIV - mesecni priliv uporabnika, en znesek na mesec
     CREATE TABLE priliv(
         id_priliv SERIAL PRIMARY KEY,
-        id_uporabnik INTEGER NOT NULL UNIQUE,
-        leto INTEGER NOT NULL UNIQUE,
-        mesec INTEGER NOT NULL CHECK (mesec BETWEEN 1 AND 12) UNIQUE,
-        znesek NUMERIC(10, 2) NOT NULL CHECK (znesek > 0),
-
-        FOREIGN KEY (id_uporabnik) REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE
+        tk_uporabnik INTEGER NOT NULL REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
+        leto INTEGER NOT NULL,
+        mesec INTEGER NOT NULL CHECK (mesec BETWEEN 1 AND 12),
+        znesek NUMERIC(10, 2) NOT NULL CHECK (znesek>0),
+        UNIQUE (tk_uporabnik, leto, mesec)
 );
 
 --skoraj vedno iscemo stroske enega uporabnika
