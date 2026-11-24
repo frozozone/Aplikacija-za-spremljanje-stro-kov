@@ -15,7 +15,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 //mesecni priliv uporabnika, en zapis na uporabnika, leto in mesec (UNIQUE v bazi)
-//ta razred je zacasen (za US-2), pri merge z vejo US-1 obdrzimo verzijo US-1
 @Entity
 @Table(name = "priliv")
 public class Priliv {
@@ -25,7 +24,7 @@ public class Priliv {
     private Long id;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_uporabnik", nullable = false)
+    @JoinColumn(name = "tk_uporabnik", nullable = false)
     private Uporabnik uporabnik;
 
     @Column(nullable = false)

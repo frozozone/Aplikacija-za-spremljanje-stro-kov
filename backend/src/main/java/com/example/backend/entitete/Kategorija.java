@@ -29,7 +29,7 @@ public class Kategorija {
 
     //null pomeni, da je to glavna kategorija, drugace je podkategorija
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_nadrejena")
+    @JoinColumn(name = "tk_nadrejena")
     @Schema(description = "Nadrejena kategorija (null pri glavnih kategorijah)")
     private Kategorija nadrejena;
 

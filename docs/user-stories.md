@@ -39,20 +39,20 @@
 ``` sql
 CREATE TABLE priliv(
 id_priliv SERIAL PRIMARY KEY,
-id_uporabnik INTEGER NOT NULL REFERENCES uporabnik(id_uporabnik),
+tk_uporabnik INTEGER NOT NULL REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
 leto INTEGER NOT NULL,
 mesec INTEGER NOT NULL CHECK (mesec BETWEEN 1 AND 12),
 znesek NUMERIC (10,2) NOT NULL CHECK (znesek>0),
-UNIQUE (id_uporabnik, leto, mesec)
+UNIQUE (tk_uporabnik, leto, mesec)
 );
 ```
 
 Razlaga nekaterih atributov:
-- ```id_uporabnik``` (v tabeli *priliv*) je tuji ključ ki kaže na ```uporabnik.id_uporabnik```. **ON DELETE CASCADE**, zato, da ko se izbriše uporabnik se izbrišejp tudi njegovi prilivi, enako kot stroški
+- ```tk_uporabnik``` (v tabeli *priliv*) je tuji ključ ki kaže na ```uporabnik.id_uporabnik```. **ON DELETE CASCADE**, zato, da ko se izbriše uporabnik se izbrišejp tudi njegovi prilivi, enako kot stroški
 
 - ```mesec``` ima pogoj da je lahko vrednost med 1 in 12 (januar-december)
 - ```znesek``` ima pogoj, da je lahko samo več kot 0
-- ``` UNIQUE (id_uporabnik, leto, mesec) ``` en priliv na uporabnika na mesec, kar pokrije 2. kriterij: "Sprememba priliva"
+- ``` UNIQUE (tk_uporabnik, leto, mesec) ``` en priliv na uporabnika na mesec, kar pokrije 2. kriterij: "Sprememba priliva"
 
 ### Backend
 

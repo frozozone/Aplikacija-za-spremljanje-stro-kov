@@ -6,6 +6,8 @@ import TabelaStroskov from "./TabelaStroskov";
 import * as zaledje from "./zaledje";
 import { urediKategorijeHierarhicno } from "./pomozneFunkcije";
 import KarticaDnevniLimit from "./KarticaDnevniLimit";
+import ObrazecPriliv from "./ObrazecPriliv";
+
 
 const VELIKOST_STRANI = 10; //koliko stroskov se prikaze na eni strani
 
@@ -149,6 +151,7 @@ function StranStroski() {
       <div className="col-lg-4">
         <KarticaDnevniLimit dnevniLimit={dnevniLimit} napaka={napakaLimita} />
         <ObrazecNovStrosek kategorije={kategorije} naciniPlacila={naciniPlacila} obDodaj={dodajStrosek} />
+        <ObrazecPriliv obShrani={osveziDnevniLimit} />
       </div>
       {strosekZaUrejanje && (
         <ModalUrejanjeStroska
