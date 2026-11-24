@@ -25,7 +25,7 @@ public class Priliv {
     private Long id;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_uporabnik", nullable = false)
+    @JoinColumn(name = "tk_uporabnik", nullable = false)
     private Uporabnik uporabnik;
 
     @Column(nullable = false)

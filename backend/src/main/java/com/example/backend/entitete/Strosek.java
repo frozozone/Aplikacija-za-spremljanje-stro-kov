@@ -57,20 +57,20 @@ public class Strosek {
 
     @NotNull(message = "Kategorija je obvezna")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_kategorija", nullable = false)
+    @JoinColumn(name = "tk_kategorija", nullable = false)
     @Schema(description = "Kategorija stroška, dovolj je poslati id")
     private Kategorija kategorija;
 
     @NotNull(message = "Način plačila je obvezen")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_nacin_placila", nullable = false)
+    @JoinColumn(name = "tk_nacin_placila", nullable = false)
     @Schema(description = "Način plačila, dovolj je poslati id")
     private NacinPlacila nacinPlacila;
 
     //lastnika nastavi backend, zato ga frontend ne posilja in ne dobi nazaj
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_uporabnik", nullable = false)
+    @JoinColumn(name = "tk_uporabnik", nullable = false)
     private Uporabnik uporabnik;
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)

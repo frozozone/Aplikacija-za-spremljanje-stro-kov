@@ -31,9 +31,9 @@ CREATE TABLE uporabnik(
     geslo_hash VARCHAR(255) NOT NULL, --samo bcrypt hash, nikoli pravo geslo
     ime VARCHAR(80) NOT NULL,
     priimek VARCHAR(80) NOT NULL,
-    id_vloga INTEGER NOT NULL,
+    tk_vloga INTEGER NOT NULL,
     ustvarjen TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_vloga) REFERENCES vloga(id_vloga)
+    FOREIGN KEY (tk_vloga) REFERENCES vloga(id_vloga)
 );
 
 
@@ -45,23 +45,23 @@ CREATE TABLE nacin_placila(
 
 
 --4. KATEGORIJA - sifrant kategorij
---id_nadrejena kaze na drugo kategorijo v isti tabeli (rekurzivna relacija):
+--tk_nadrejena kaze na drugo kategorijo v isti tabeli (rekurzivna relacija):
 --NULL pomeni glavno kategorijo, drugace je podkategorija
 CREATE TABLE kategorija(
     id_kategorija SERIAL PRIMARY KEY,
     naziv VARCHAR(100) NOT NULL,
-    id_nadrejena INTEGER NULL,
-    FOREIGN KEY (id_nadrejena) REFERENCES kategorija(id_kategorija) ON DELETE RESTRICT, --kategorije s podkategorijami ne moremo izbrisati
-    UNIQUE NULLS NOT DISTINCT (naziv, id_nadrejena) --NULLS NOT DISTINCT, da tudi dve glavni kategoriji ne moreta imeti istega imena
+    tk_nadrejena INTEGER NULL,
+    FOREIGN KEY (tk_nadrejena) REFERENCES kategorija(id_kategorija) ON DELETE RESTRICT, --kategorije s podkategorijami ne moremo izbrisati
+    UNIQUE NULLS NOT DISTINCT (naziv, tk_nadrejena) --NULLS NOT DISTINCT, da tudi dve glavni kategoriji ne moreta imeti istega imena
 );
 
 
 --5. STROSEK - posamezni stroski uporabnika
 CREATE TABLE strosek(
     id_strosek SERIAL PRIMARY KEY,
-    id_uporabnik INTEGER NOT NULL,
-    id_kategorija INTEGER NOT NULL,
-    id_nacin_placila INTEGER NOT NULL,
+    tk_uporabnik INTEGER NOT NULL,
+    tk_kategorija INTEGER NOT NULL,
+    tk_nacin_placila INTEGER NOT NULL,
     naziv VARCHAR(100) NOT NULL,
     znesek NUMERIC(10, 2) NOT NULL CHECK (znesek > 0),
     datum DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -70,24 +70,23 @@ CREATE TABLE strosek(
     ustvarjeno TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     --ce se uporabnik izbrise, se izbrisejo tudi njegovi stroski
-    FOREIGN KEY (id_uporabnik) REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
-    FOREIGN KEY (id_kategorija) REFERENCES kategorija(id_kategorija),
-    FOREIGN KEY (id_nacin_placila) REFERENCES nacin_placila(id_nacin_placila)
+    FOREIGN KEY (tk_uporabnik) REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
+    FOREIGN KEY (tk_kategorija) REFERENCES kategorija(id_kategorija),
+    FOREIGN KEY (tk_nacin_placila) REFERENCES nacin_placila(id_nacin_placila)
 );
 
--- tabela priliv je zacasna za US-2, pri merge z vejo US-1 obdrzimo tisto verzijo
 --6. PRILIV - mesecni priliv uporabnika, en znesek na mesec
-    CREATE TABLE priliv(
-        id_priliv SERIAL PRIMARY KEY,
-        tk_uporabnik INTEGER NOT NULL REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
-        leto INTEGER NOT NULL,
-        mesec INTEGER NOT NULL CHECK (mesec BETWEEN 1 AND 12),
-        znesek NUMERIC(10, 2) NOT NULL CHECK (znesek>0),
-        UNIQUE (tk_uporabnik, leto, mesec)
+CREATE TABLE priliv(
+    id_priliv SERIAL PRIMARY KEY,
+    tk_uporabnik INTEGER NOT NULL REFERENCES uporabnik(id_uporabnik) ON DELETE CASCADE,
+    leto INTEGER NOT NULL,
+    mesec INTEGER NOT NULL CHECK (mesec BETWEEN 1 AND 12),
+    znesek NUMERIC(10, 2) NOT NULL CHECK (znesek > 0),
+    UNIQUE (tk_uporabnik, leto, mesec)
 );
 
 --skoraj vedno iscemo stroske enega uporabnika
-CREATE INDEX idx_strosek_uporabnik ON strosek(id_uporabnik);
+CREATE INDEX idx_strosek_uporabnik ON strosek(tk_uporabnik);
 
 
 --========================================================
@@ -100,7 +99,7 @@ INSERT INTO vloga (naziv) VALUES
 
 
 --vsi testni uporabniki imajo geslo: geslo123
-INSERT INTO uporabnik (uporabnisko_ime, email, geslo_hash, ime, priimek, id_vloga) VALUES
+INSERT INTO uporabnik (uporabnisko_ime, email, geslo_hash, ime, priimek, tk_vloga) VALUES
 ('admin', 'admin@example.com', crypt('geslo123', gen_salt('bf', 10)), 'Admin', 'Administrator', 2), --id 1
 ('ana',   'ana@example.com',   crypt('geslo123', gen_salt('bf', 10)), 'Ana',   'Novak',         1), --id 2
 ('marko', 'marko@example.com', crypt('geslo123', gen_salt('bf', 10)), 'Marko', 'Kovač',         1); --id 3
@@ -112,8 +111,8 @@ INSERT INTO nacin_placila (naziv) VALUES
 ('Bančno nakazilo');   --id 3
 
 
---glavne kategorije (id_nadrejena = NULL)
-INSERT INTO kategorija (naziv, id_nadrejena) VALUES
+--glavne kategorije (tk_nadrejena = NULL)
+INSERT INTO kategorija (naziv, tk_nadrejena) VALUES
 ('Hrana in pijača',             NULL), --id 1
 ('Prevoz',                      NULL), --id 2
 ('Zabava',                      NULL), --id 3
@@ -126,7 +125,7 @@ INSERT INTO kategorija (naziv, id_nadrejena) VALUES
 ('Drugo',                       NULL); --id 10
 
 --podkategorije
-INSERT INTO kategorija (naziv, id_nadrejena) VALUES
+INSERT INTO kategorija (naziv, tk_nadrejena) VALUES
 ('Trgovina',           1), --id 11  Hrana in pijača > Trgovina
 ('Restavracije',       1), --id 12  Hrana in pijača > Restavracije
 ('Kava in malica',     1), --id 13  Hrana in pijača > Kava in malica
@@ -144,7 +143,7 @@ INSERT INTO kategorija (naziv, id_nadrejena) VALUES
 
 
 --stroski (vecina za ano, da je kaj videti v tabeli in da deluje paginacija)
-INSERT INTO strosek (id_uporabnik, id_kategorija, id_nacin_placila, naziv, znesek, datum, cas, opis) VALUES
+INSERT INTO strosek (tk_uporabnik, tk_kategorija, tk_nacin_placila, naziv, znesek, datum, cas, opis) VALUES
 --ana (id 2)
 (2, 13, 1, 'Kava',                       2.50, '2026-06-07', '08:15:00', NULL),
 (2, 12, 2, 'Kosilo',                    12.00, '2026-06-07', '12:30:00', 'Dnevno kosilo blizu faksa'),
@@ -183,10 +182,10 @@ INSERT INTO strosek (id_uporabnik, id_kategorija, id_nacin_placila, naziv, znese
 --testni podatki za dnevni limit: priliv in stroski za ano v tekocem mesecu
 --primer: priliv 600, do vceraj porabljeno 300, danes 12 -> dnevni limit 20, danes lahko porabi se 8
 --(na prvi dan v mesecu se najemnina in nakup stejeta kot danasnja poraba)
-INSERT INTO priliv (id_uporabnik, leto, mesec, znesek) VALUES
+INSERT INTO priliv (tk_uporabnik, leto, mesec, znesek) VALUES
     (2, EXTRACT(YEAR FROM CURRENT_DATE)::int, EXTRACT(MONTH FROM CURRENT_DATE)::int, 600.00);
 
-INSERT INTO strosek (id_uporabnik, id_kategorija, id_nacin_placila, naziv, znesek, datum, cas, opis) VALUES
+INSERT INTO strosek (tk_uporabnik, tk_kategorija, tk_nacin_placila, naziv, znesek, datum, cas, opis) VALUES
 (2, 18, 3, 'Najemnina ta mesec',  250.00, date_trunc('month', CURRENT_DATE)::date, '09:00:00', 'Testni podatek za dnevni limit'),
 (2, 11, 2, 'Nakup ta mesec',       50.00, date_trunc('month', CURRENT_DATE)::date, '16:10:00', 'Testni podatek za dnevni limit'),
 (2, 12, 2, 'Kosilo danes',         12.00, CURRENT_DATE,                            '12:30:00', 'Testni podatek za dnevni limit');

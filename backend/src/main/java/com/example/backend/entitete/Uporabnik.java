@@ -39,7 +39,7 @@ public class Uporabnik {
     private String priimek;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_vloga", nullable = false)
+    @JoinColumn(name = "tk_vloga", nullable = false)
     private Vloga vloga;
 
     //cas ustvarjanja nastavi baza sama (DEFAULT CURRENT_TIMESTAMP)
