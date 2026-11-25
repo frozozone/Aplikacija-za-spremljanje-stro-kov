@@ -10,13 +10,13 @@ function ModalUrejanjeStroska({ strosek, kategorije, naciniPlacila, obShrani, ob
     setPodatki((prejsnjiPodatki) => ({ ...prejsnjiPodatki, [polje]: vrednost }));
   };
 
-  const shraniSpremembe = () => {
+  const shraniSpremembe = async () => {
     const napaka = najdiNapakoObrazca(podatki);
     if (napaka) {
       alert(napaka);
       return;
     }
-    obShrani(obrazecVStrosek(podatki));
+    await obShrani(obrazecVStrosek(podatki));
   };
 
   return (

@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import IzbirniSeznam from "./IzbirniSeznam";
 import ModalUrejanjeStroska from "./ModalUrejanjeStroska";
 import ObrazecNovStrosek from "./ObrazecNovStrosek";
 import TabelaStroskov from "./TabelaStroskov";
 import * as zaledje from "./zaledje";
-import { urediKategorijeHierarhicno } from "./pomozneFunkcije";
+import { danasnjiDatum, prikaziZnesek, urediKategorijeHierarhicno } from "./pomozneFunkcije";
 import KarticaDnevniLimit from "./KarticaDnevniLimit";
 import ObrazecPriliv from "./ObrazecPriliv";
+import OpozoriloLimitModal from "./OpozoriloLimitModal";
 
 
 const VELIKOST_STRANI = 10; //koliko stroskov se prikaze na eni strani
@@ -22,6 +23,8 @@ function StranStroski() {
   const [steviloStrani, setSteviloStrani] = useState(0); //koliko strani je vseh skupaj
   const [dnevniLimit, setDnevniLimit] = useState(null); //odgovor GET /dnevni-limit, null dokler se ne nalozi
   const [napakaLimita, setNapakaLimita] = useState(null); //napaka pri nalaganju limita, null ce je vse v redu
+  const [opozoriloLimita, setOpozoriloLimita] = useState(null);
+  const cakajocaOdlocitev = useRef(null);
 
   const obravnavajNapako = useCallback((napaka) => {
     console.error("Napaka:", napaka);
@@ -77,24 +80,92 @@ function StranStroski() {
     osvezi();
   }, [osvezi]);
 
-  const dodajStrosek = async (novStrosek) => {
+  const shraniPoPreverjanjuLimita = async ({ strosek, stariStrosek = null, shrani }) => {
+    const danes = danasnjiDatum();
+    if (strosek.datum !== danes) {
+      return shrani();
+    }
+
+    let limit;
     try {
-      await zaledje.dodajStrosek(novStrosek);
-      osvezi();
-      return true;
+      limit = await zaledje.naloziDnevniLimit();
     } catch (napaka) {
+      if (napaka.status === 404) {
+        return shrani();
+      }
       obravnavajNapako(napaka);
       return false;
     }
+
+    const stariZnesekDanes = stariStrosek?.datum === danes ? Number(stariStrosek.znesek) : 0;
+    const porabaPoShranitvi = Number(limit.porabljenoDanes) - stariZnesekDanes + Number(strosek.znesek);
+    const vCente = (znesek) => Math.round(Number(znesek) * 100);
+    const presezenoDanes = (vCente(porabaPoShranitvi) - vCente(limit.dnevniLimit)) / 100;
+
+    if (presezenoDanes <= 0) {
+      return shrani();
+    }
+
+    const danesJeMesec = (datum) => datum?.slice(0, 7) === danes.slice(0, 7);
+    const stariZnesekTaMesec = danesJeMesec(stariStrosek?.datum) ? Number(stariStrosek.znesek) : 0;
+    const noviZnesekTaMesec = danesJeMesec(strosek.datum) ? Number(strosek.znesek) : 0;
+    const porabaPoShranitviTaMesec =
+      Number(limit.porabljenoTaMesec) - stariZnesekTaMesec + noviZnesekTaMesec;
+    const presezenoTaMesec = Math.max(
+      0,
+      (vCente(porabaPoShranitviTaMesec) - vCente(limit.priliv)) / 100
+    );
+
+    return new Promise((resolve) => {
+      cakajocaOdlocitev.current = async (potrjeno) => {
+        setOpozoriloLimita(null);
+        if (!potrjeno) {
+          resolve(false);
+          return;
+        }
+        resolve(await shrani());
+      };
+      setOpozoriloLimita({ presezenoDanes, presezenoTaMesec });
+    });
   };
 
-  const shraniUrejanje = async (posodobljenStrosek) => {
-    try {
-      await zaledje.posodobiStrosek(strosekZaUrejanje.id, posodobljenStrosek);
-      setStrosekZaUrejanje(null);
-      osvezi();
-    } catch (napaka) {
-      obravnavajNapako(napaka);
+  const dodajStrosek = (novStrosek) =>
+    shraniPoPreverjanjuLimita({
+      strosek: novStrosek,
+      shrani: async () => {
+        try {
+          await zaledje.dodajStrosek(novStrosek);
+          osvezi();
+          return true;
+        } catch (napaka) {
+          obravnavajNapako(napaka);
+          return false;
+        }
+      },
+    });
+
+  const shraniUrejanje = (posodobljenStrosek) =>
+    shraniPoPreverjanjuLimita({
+      strosek: posodobljenStrosek,
+      stariStrosek: strosekZaUrejanje,
+      shrani: async () => {
+        try {
+          await zaledje.posodobiStrosek(strosekZaUrejanje.id, posodobljenStrosek);
+          setStrosekZaUrejanje(null);
+          osvezi();
+          return true;
+        } catch (napaka) {
+          obravnavajNapako(napaka);
+          return false;
+        }
+      },
+    });
+
+  const izberiOpozorilo = async (potrjeno) => {
+    const odlocitev = cakajocaOdlocitev.current;
+    cakajocaOdlocitev.current = null;
+    if (odlocitev) {
+      await odlocitev(potrjeno);
     }
   };
 
@@ -160,6 +231,14 @@ function StranStroski() {
           naciniPlacila={naciniPlacila}
           obShrani={shraniUrejanje}
           obZapri={() => setStrosekZaUrejanje(null)}
+        />
+      )}
+      {opozoriloLimita && (
+        <OpozoriloLimitModal
+          presezenoDanes={prikaziZnesek(opozoriloLimita.presezenoDanes)}
+          presezenoTaMesec={opozoriloLimita.presezenoTaMesec}
+          obShraniVseeno={() => izberiOpozorilo(true)}
+          obPreklici={() => izberiOpozorilo(false)}
         />
       )}
     </div>

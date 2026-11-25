@@ -42,11 +42,9 @@ Dnevni limit se vsak dan izračuna na novo. Če danes porabiš manj, je jutri dn
 - pregled stroškov po straneh (PU1),
 - iskanje po nazivu in filtriranje po kategoriji (PU2),
 - urejanje (PU3), dodajanje in brisanje stroškov (PU4) z izbiro kategorije (PU5)
+- vnos mesečnega priliva (PU7), prikaz priporočenega dnevnega limita (PU9) in opozorilo pred shranjevanjem stroška, ki preseže dnevni limit (PU8)
 
 Načrtovano:
-- vnos mesečnega priliva (PU7),
-- prikaz priporočenega dnevnega limita (PU9),
-- opozorilo, če z novim stroškom presežeš dnevni limit (PU8),
 - pregled porabe po kategorijah za tekoči mesec (PU6); če je stroškov premalo, se izpiše sporočilo "premalo podatkov",
 - upravljanje kategorij, ki ga opravlja administrator (PU10)
 
@@ -92,13 +90,13 @@ PU1: pregled stroškov\
 PU2: iskanje in filtriranje stroškov\
 PU3: urejanje stroška\
 PU4: dodajanje in brisanje stroška\
-PU5: izbira kategorije
+PU5: izbira kategorije\
+PU7: vnos mesečnega priliva\
+PU8: opozorilo o preseganju priporočenega dnevnega limita\
+PU9: prikaz priporočenega dnevnega limita
 
 **Načrtovane funkcionalnosti:**\
 PU6: pregled statistike po kategorijah\
-PU7: vnos mesečnega priliva\
-PU8: opozorilo o preseganju priporočenega dnevnega limita\
-PU9: prikaz priporočenega dnevnega limita\
 PU10: upravljanje kategorij
 
 Akterja:
@@ -172,6 +170,7 @@ Baza in orodja:
 │   │   ├── TabelaStroskov.jsx              # tabela stroškov z gumboma za urejanje in brisanje
 │   │   ├── ObrazecNovStrosek.jsx           # obrazec za dodajanje stroška
 │   │   ├── ModalUrejanjeStroska.jsx        # okno za urejanje stroška
+│   │   ├── OpozoriloLimitModal.jsx         # potrditev shranjevanja ob preseženem dnevnem limitu
 │   │   ├── PoljaStroska.jsx                # polja, skupna obrazcu in oknu za urejanje
 │   │   ├── IzbirniSeznam.jsx               # spustni seznam (kategorije, načini plačila)
 │   │   ├── pomozneFunkcije.js              # datum, čas, preverjanje obrazca, izpis zneska

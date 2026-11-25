@@ -62,6 +62,10 @@ export const obrazecVStrosek = (podatki) => ({
 
 //vrne sporocilo napake ali null, ce je obrazec v redu (ostala polja preveri backend)
 export const najdiNapakoObrazca = (podatki) => {
+  const znesek = Number(podatki.znesek);
+  if (!Number.isFinite(znesek) || znesek <= 0) {
+    return "Znesek mora biti večji od 0";
+  }
   if (!podatki.kategorijaId) {
     return "Izberi kategorijo! Če strošek ne spada nikamor, izberi Drugo.";
   }
