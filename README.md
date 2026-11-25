@@ -88,8 +88,8 @@ Diagram prikazuje ključne funkcionalnosti v načrtovani različici aplikacije.
 **Že implementirane funkcionalnosti:**\
 PU1: pregled stroškov\
 PU2: iskanje in filtriranje stroškov\
-PU3: urejanje stroška\
-PU4: dodajanje in brisanje stroška\
+PU3: dodajanje stroška\
+PU4: urejanje in brisanje stroška\
 PU5: izbira kategorije\
 PU7: vnos mesečnega priliva\
 PU8: opozorilo o preseganju priporočenega dnevnega limita\
@@ -104,7 +104,7 @@ Akterja:
 - Administrator, ki upravlja kategorije
 
 Povezave:
-- `<<include>>`: urejanje stroška (PU3) ter dodajanje in brisanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
+- `<<include>>`: dodajanje stroška (PU3) ter urejanje in brisanje stroška (PU4) vedno vključujeta izbiro kategorije (PU5)
 - `<<extend>>`: iskanje in filtriranje stroškov (PU2) razširja pregled stroškov (PU1)
 - `<<extend>>`: opozorilo o preseganju priporočenega dnevnega limita (PU8) razširja urejanje stroška (PU3), vendar samo če strošek preseže dnevni limit
 
