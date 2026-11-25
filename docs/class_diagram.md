@@ -30,8 +30,8 @@ Vsi razširjajo JpaRepository, ki že vsebuje osnovne operacije (findAll, findBy
 - `StoritevDnevniLimit`: iz baze zbere priliv in porabo ter ju preda izračunu, sama ne računa.
 - `IzracunDnevnegaLimita`: pomožni razred s statičnimi metodami. Izračun je ločen od baze, zato ga je lahko testirati.
 - `StoritevPriliv`: poišče priliv za tekoči mesec ter ga ustvari ali posodobi.
-- `StoritevKategorija`: dodajanje, preimenovanje in brisanje kategorij.
-- `StoritevStatistika`: statistika porabe po kategorijah za izbrano obdobje.
+- `StoritevKategorija`(načrtovano): dodajanje, preimenovanje in brisanje kategorij.
+- `StoritevStatistika`(načrtovano): statistika porabe po kategorijah za izbrano obdobje.
 
 ### Kontrolerji:
 Kontrolerji sprejmejo zahtevo s frontenda in jo predajo storitvi oz. repozitoriju.
@@ -39,13 +39,13 @@ Kontrolerji sprejmejo zahtevo s frontenda in jo predajo storitvi oz. repozitorij
 - `KontrolerKategorija`, `KontrolerNacinPlacila`: `prikaziKategorije` in `prikaziNacinePlacila` vrneta šifrant po abecedi za izbiro v obrazcu (PU5).
 - `KontrolerDnevniLimit`: `prikaziDnevniLimit` vrne današnji dnevni limit (PU9) ali 404, če priliv še ni vnesen. Iz odgovora frontend izračuna opozorilo o preseganju limita (PU8).
 - `KontrolerPriliv`: `prikaziPriliv` in `shraniPriliv` za mesečni priliv (PU7).
-- `KontrolerStatistika`:
+- `KontrolerStatistika`(načrtovano): vrne statistiko po kategorijah.
 - `ObravnavaNapak`: napake iz vseh kontrolerjev (ResponseStatusException, neveljavni podatki, kršitve baze) vrne v obliki `{"message": "..."}`.
 
 ### record:
 - `DnevniLimitOdgovor`: rezultat izračuna dnevnega limita, ki ga prejme frontend (priliv, poraba do včeraj/danes/ta mesec, preostali dnevi, limit, preseženi zneski).
 - `PrilivZahteva`: telo zahteve za vnos priliva (znesek, obvezen in večji od 0).
-- `StatistikaKategorije`:
+- `StatistikaKategorije`(načrtovano): ena vrstica statistike: kategorija, vsota in odstotek.
 
 ## Ključne metode in potek funkcionalnosti:
 - `StoritevDnevniLimit.izracunajZaDanes`: iz baze zbere priliv ter porabo do včeraj in danes, nato pokliče `IzracunDnevnegaLimita.izracunaj`, ki izračuna limit = (priliv − porabljeno do včeraj) / preostali dnevi (vključno z današnjim), zaokroženo navzdol na 2 decimalki; če je priliv že porabljen, je limit 0.
