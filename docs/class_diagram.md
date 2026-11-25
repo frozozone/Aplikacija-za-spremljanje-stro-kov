@@ -6,7 +6,6 @@
 
 #### Še ni implementirano
 - `StoritevStatistika`, `KontrolerStatistika` in `StatistikaKategorije` (PU6)
-- `StoritevOpozorilo` in `OpozoriloOdgovor` (PU8)
 - `StoritevKategorija` (PU10)
 
 ## Opis razredov:
@@ -31,7 +30,6 @@ Vsi razširjajo JpaRepository, ki že vsebuje osnovne operacije (findAll, findBy
 - `StoritevDnevniLimit`: iz baze zbere priliv in porabo ter ju preda izračunu, sama ne računa.
 - `IzracunDnevnegaLimita`: pomožni razred s statičnimi metodami. Izračun je ločen od baze, zato ga je lahko testirati.
 - `StoritevPriliv`: poišče priliv za tekoči mesec ter ga ustvari ali posodobi.
-- `StoritevOpozorilo`: preveri, ali nov strošek preseže dnevni limit ali priliv.
 - `StoritevKategorija`: dodajanje, preimenovanje in brisanje kategorij.
 - `StoritevStatistika`: statistika porabe po kategorijah za izbrano obdobje.
   
@@ -46,7 +44,6 @@ Vsi razširjajo JpaRepository, ki že vsebuje osnovne operacije (findAll, findBy
 ### record:
 - `DnevniLimitOdgovor`:
 - `PrilivZahteva`:
-- `OpozoriloOdgovor`:
 - `StatistikaKategorije`:
 
 ## Ključne metode in potek funkcionalnosti:
