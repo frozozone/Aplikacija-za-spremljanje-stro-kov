@@ -51,3 +51,8 @@ Kontrolerji sprejmejo zahtevo s frontenda in jo predajo storitvi oz. repozitorij
 - `StoritevDnevniLimit.izracunajZaDanes`: iz baze zbere priliv ter porabo do včeraj in danes, nato pokliče `IzracunDnevnegaLimita.izracunaj`, ki izračuna limit = (priliv − porabljeno do včeraj) / preostali dnevi (vključno z današnjim), zaokroženo navzdol na 2 decimalki; če je priliv že porabljen, je limit 0.
 - `StoritevPriliv.shrani`: ustvari ali posodobi priliv za tekoči mesec.
 - `StrosekBaza.findByKategorija` in `vsotaStroskov`: filtriranje stroškov po kategoriji in vsota porabe za izračun limita.
+- `KontrolerStrosek.pridobi, dodaj, posodobi in izbrisi`: pregled, iskanje ter dodajanje, urejanje in brisanje stroškov; pred shranjevanjem današnjega stroška odjemalec prek `KontrolerDnevniLimit` preveri prekoračitev dnevnega limita (PU8).
+- `KategorijaBaza` in `NacinPlacilaBaza` (`findAllByOrderByNazivAsc`): pridobi urejenega šifranta kategorij in načinov plačila za izbiro pri vnosu ali urejanju stroška.
+- `StoritevStatistika.izracunajZaObdobje`: za izbrano obdobje zbere stroške uporabnika, jih združi po kategorijah ter izračuna skupne zneske in odstotne deleže porabe v zapisu `StatistikaKategorije`.
+- `StoritevKategorija.dodaj, preimenuj in izbrisi`: upravljanje kategorij in podkategorij; pred dodajanjem ali preimenovanjem preveri, da je ime novo, pred brisanjem pa prek `StrosekBaza.findByKategorija` prekliče izbris, če so na kategorijo že vezani stroški.
+- `ObravnavaNapak`: prestreže izjeme iz kontrolerjev in storitev (neveljaven znesek, manjkajoč priliv, ...), ter vrne ustrezno sporočilo o napaki.
