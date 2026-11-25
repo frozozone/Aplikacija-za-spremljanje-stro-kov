@@ -25,25 +25,29 @@ Vsi razširjajo JpaRepository, ki že vsebuje osnovne operacije (findAll, findBy
 - `StrosekBaza`: dostop do stroškov, `findByKategorija` vrne stroške izbrane kategorije in njenih podkategorij, `vsotaStroskov` vrne vsoto stroškov uporabnika med dvema datumoma.
 - `KategorijaBaza`, `NacinPlacilaBaza`: `findAllByOrderByNazivAsc` vrne šifrant po abecedi.
 - `PrilivBaza`: `findByUporabnikIdAndLetoAndMesec` poišče priliv za izbran mesec.
-  
+
 ### Storitve:
 - `StoritevDnevniLimit`: iz baze zbere priliv in porabo ter ju preda izračunu, sama ne računa.
 - `IzracunDnevnegaLimita`: pomožni razred s statičnimi metodami. Izračun je ločen od baze, zato ga je lahko testirati.
 - `StoritevPriliv`: poišče priliv za tekoči mesec ter ga ustvari ali posodobi.
 - `StoritevKategorija`: dodajanje, preimenovanje in brisanje kategorij.
 - `StoritevStatistika`: statistika porabe po kategorijah za izbrano obdobje.
-  
+
 ### Kontrolerji:
-- `KontrolerStrosek`:
-- `KontrolerPriliv`:
-- `KontrolerDnevniLimit`:
-- `KontrolerKategorija`, `KontrolerNacinPlacila`:
+Kontrolerji sprejmejo zahtevo s frontenda in jo predajo storitvi oz. repozitoriju.
+- `KontrolerStrosek`: endpointi za stroške. `prikaziStroske` vrne stroške po straneh (PU1), opcijsko filtrirane po kategoriji in njenih podkategorijah (PU2; iskanje po nazivu je na frontendu). `prikaziStrosek` vrne en strošek ali 404. `dodajStrosek` in `izbrisiStrosek` (PU4) ter `posodobiStrosek` (PU3) urejajo stroške. Zasebna metoda `nastaviSifrante` id-ja kategorije in načina plačila zamenja z zapisoma iz baze oz. vrne 400, če ne obstajata (PU5).
+- `KontrolerKategorija`, `KontrolerNacinPlacila`: `prikaziKategorije` in `prikaziNacinePlacila` vrneta šifrant po abecedi za izbiro v obrazcu (PU5).
+- `KontrolerDnevniLimit`: `prikaziDnevniLimit` vrne današnji dnevni limit (PU9) ali 404, če priliv še ni vnesen. Iz odgovora frontend izračuna opozorilo o preseganju limita (PU8).
+- `KontrolerPriliv`: `prikaziPriliv` in `shraniPriliv` za mesečni priliv (PU7).
 - `KontrolerStatistika`:
-- `ObravnavaNapak`:
+- `ObravnavaNapak`: napake iz vseh kontrolerjev (ResponseStatusException, neveljavni podatki, kršitve baze) vrne v obliki `{"message": "..."}`.
 
 ### record:
-- `DnevniLimitOdgovor`:
-- `PrilivZahteva`:
+- `DnevniLimitOdgovor`: rezultat izračuna dnevnega limita, ki ga prejme frontend (priliv, poraba do včeraj/danes/ta mesec, preostali dnevi, limit, preseženi zneski).
+- `PrilivZahteva`: telo zahteve za vnos priliva (znesek, obvezen in večji od 0).
 - `StatistikaKategorije`:
 
 ## Ključne metode in potek funkcionalnosti:
+- `StoritevDnevniLimit.izracunajZaDanes`: iz baze zbere priliv ter porabo do včeraj in danes, nato pokliče `IzracunDnevnegaLimita.izracunaj`, ki izračuna limit = (priliv − porabljeno do včeraj) / preostali dnevi (vključno z današnjim), zaokroženo navzdol na 2 decimalki; če je priliv že porabljen, je limit 0.
+- `StoritevPriliv.shrani`: ustvari ali posodobi priliv za tekoči mesec.
+- `StrosekBaza.findByKategorija` in `vsotaStroskov`: filtriranje stroškov po kategoriji in vsota porabe za izračun limita.

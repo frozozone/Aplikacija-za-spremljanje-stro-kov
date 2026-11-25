@@ -113,7 +113,9 @@ Povezave:
 ## Uporabniške zgodbe:
 [Uporabniške zgodbe](docs/user-stories.md)
 ## Razredni diagram:
-[Razredni diagram](docs/class_diagram.md)
+![Razredni diagram](docs/Razredni-diagram/Class_Diagram.svg)
+
+[Diagram v polni velikosti](docs/Razredni-diagram/Class_Diagram.svg) · [Opis razrednega diagrama](docs/class_diagram.md)
 ## Uporabljene tehnologije
 Backend:
 - Java 21
